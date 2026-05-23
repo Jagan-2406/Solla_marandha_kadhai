@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>தமிழ் வாக்கிய உருவாக்கி - Tamil Sentence & Dialogue Generator</title>
+  <meta name="description" content="Generate grammatically correct Tamil sentences and dialogue conversations using rule-based NLP and Text-to-Speech audio playbacks.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icon Library (Lucide CDN alternative or SVG icons inline) -->
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-mode">
+  <div class="background-decor">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-badge">NLP</span>
+        <div class="title-meta">
+          <h1>தமிழ் வாக்கிய உருவாக்கி</h1>
+          <p>Tamil Sentence & Dialogue Generator</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="main-layout">
+      <!-- Left Panel: Input Configuration -->
+      <section class="panel input-panel">
+        <h2>அமைப்பு <span class="sub-heading">(Configuration)</span></h2>
+        
+        <!-- Quick Presets -->
+        <div class="presets-section">
+          <label class="section-label">விரைவுத் தேர்வுகள் (Quick Presets)</label>
+          <div class="presets-grid">
+            <button type="button" class="preset-btn" onclick="applyPreset('பால்', 'குடி', 'present', 'first', 'statement')">
+              நான் பால் குடிக்கிறேன்
+            </button>
+            <button type="button" class="preset-btn" onclick="applyPreset('சோறு', 'சாப்பிடு', 'past', 'male', 'statement')">
+              அவன் சோறு சாப்பிட்டான்
+            </button>
+            <button type="button" class="preset-btn" onclick="applyPreset('பாடம்', 'படி', 'future', 'female', 'dialogue')">
+              அவள் பாடம் படிப்பாளா?
+            </button>
+          </div>
+        </div>
+
+        <form id="generator-form" onsubmit="event.preventDefault();">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="noun">பெயர்ச்சொல் <span class="label-en">(Noun)</span></label>
+              <div class="input-wrapper">
+                <input type="text" id="noun" placeholder="e.g. பால், சோறு, புத்தகம்" required>
+                <div class="input-glow"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="verb">வினைச்சொல் <span class="label-en">(Verb Root)</span></label>
+              <div class="input-wrapper">
+                <input type="text" id="verb" placeholder="e.g. குடி, சாப்பிடு, படி, செய்" required>
+                <div class="input-glow"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="tense">காலம் <span class="label-en">(Tense)</span></label>
+            <div class="select-wrapper">
+              <select id="tense">
+                <option value="present">நிகழ்காலம் (Present Tense)</option>
+                <option value="past">இறந்தகாலம் (Past Tense)</option>
+                <option value="future">எதிர்காலம் (Future Tense)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="gender">பால் / தன்மை <span class="label-en">(Subject / Gender / Plural)</span></label>
+            <div class="select-wrapper">
+              <select id="gender">
+                <option value="first">நான் (I - First Person Singular)</option>
+                <option value="male">அவன் (He - Third Person Masculine)</option>
+                <option value="female">அவள் (She - Third Person Feminine)</option>
+                <option value="neutral">அது (It - Third Person Neutral)</option>
+                <option value="plural">அவர்கள் (They - Plural / Honorific)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sentence_type">வாக்கிய வகை <span class="label-en">(Sentence Type)</span></label>
+            <div class="select-wrapper">
+              <select id="sentence_type">
+                <option value="statement">கூற்று (Statement)</option>
+                <option value="question">வினா (Question)</option>
+                <option value="dialogue">உரையாடல் (Dialogue Conversation)</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" id="submit-btn" onclick="generateSentence()" class="action-btn">
+            <span>உருவாக்கு (Generate Sentence)</span>
+            <svg class="arrow-icon" viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </form>
+      </section>
+
+      <!-- Right Panel: Output & Live Dialogue -->
+      <section class="panel output-panel">
+        <div class="panel-header">
+          <h2>வெளியீடு <span class="sub-heading">(Output Result)</span></h2>
+          <div class="status-indicator" id="status-badge">வெற்று (Ready)</div>
+        </div>
+
+        <div class="result-container">
+          <div id="result-placeholder" class="placeholder-view">
+            <div class="placeholder-icon">
+              <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </div>
+            <p>உருவாக்கப்பட்ட வாக்கியங்கள் இங்கே காண்பிக்கப்படும்</p>
+            <span>Fill the inputs and click Generate to see standard output or simulated voice chats.</span>
+          </div>
+
+          <!-- Renders single output sentences -->
+          <div id="single-result-card" class="result-card hidden">
+            <div class="output-text-wrap">
+              <p id="output-text-tamil" class="tamil-text"></p>
+              <p id="output-text-translation" class="translation-text"></p>
+            </div>
+            <div class="card-controls">
+              <button class="speak-btn btn-primary" onclick="speakResultText()" id="main-speak-btn" title="Listen Sentence">
+                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" class="audio-svg"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <span>கேள் (Speak)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Renders conversation dialogues -->
+          <div id="dialogue-result-card" class="dialogue-chat hidden">
+            <div class="chat-history" id="chat-bubbles-container">
+              <!-- Dynamically populated bubble elements -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Hidden audio element for TTS playback -->
+        <audio id="tts-audio-element" style="display: none;"></audio>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 தமிழ் வாக்கிய உருவாக்கி | AI-Based Tamil Learning Platform</p>
+    </footer>
+  </div>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
