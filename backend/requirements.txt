@@ -2,3 +2,8 @@ flask==3.0.0
 flask-cors==4.0.0
 open-tamil==1.1
 gtts==2.5.1
+python-dotenv==1.0.0
+anthropic==0.25.0
+gunicorn==21.2.0
+Pillow==10.2.0
+google-generativeai

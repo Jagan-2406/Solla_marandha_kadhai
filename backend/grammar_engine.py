@@ -96,14 +96,24 @@ SUPPORTED_VERBS = {
 
 class TamilGrammarEngine:
     def __init__(self):
-        # Pronouns
-        self.subjects = {
-            'first':  'நான்',   # I
-            'male':   'அவன்',   # He
-            'female': 'அவள்',   # She
-            'neutral':'அது',    # It
-            'plural': 'அவர்கள்' # They / Plural / Honorific
-        }
+        # Pronouns (loaded from DB if available, fallback to defaults)
+        try:
+            from db_manager import get_subject
+            self.subjects = {
+                'first':  get_subject('first'),
+                'male':   get_subject('male'),
+                'female': get_subject('female'),
+                'neutral': get_subject('neutral'),
+                'plural': get_subject('plural')
+            }
+        except Exception:
+            self.subjects = {
+                'first':  'நான்',   # I
+                'male':   'அவன்',   # He
+                'female': 'அவள்',   # She
+                'neutral':'அது',    # It
+                'plural': 'அவர்கள்' # They / Plural / Honorific
+            }
 
         # Endings by gender (except neutral)
         self.endings = {

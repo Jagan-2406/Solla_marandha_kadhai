@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>சேமித்தவை - Saved Sentences & Conversations</title>
+  <meta name="description" content="Review your saved Tamil sentences, hear audio, or delete entries.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-mode">
+  <div class="background-decor">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-badge">NLP</span>
+        <div class="title-meta">
+          <h1>சேமித்த வாக்கியங்கள்</h1>
+          <p>Saved Sentences & Dialogues</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <nav class="app-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/vocabulary" class="nav-link">Vocabulary</a>
+          <a href="/saved" class="nav-link active">Saved</a>
+          <a href="/chatbot" class="nav-link">AI Tutor</a>
+        </nav>
+        <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main style="display: flex; flex-direction: column; gap: 20px;">
+      <section class="panel">
+        <label class="section-label">சேமிக்கப்பட்டவை (Saved History)</label>
+        
+        <div class="saved-grid" id="saved-grid-container">
+          <!-- Dynamically populated cards -->
+          <div style="text-align: center; color: var(--text-secondary); padding: 50px;">
+            ஏற்றுகிறது... (Loading saved sentences...)
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Hidden audio element for TTS playback -->
+    <audio id="saved-tts-audio" style="display: none;"></audio>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 தமிழ் வாக்கிய உருவாக்கி | AI-Based Tamil Learning Platform</p>
+    </footer>
+  </div>
+
+  <script>
+    let isPlaying = false;
+
+    // Theme setup and sync
+    document.addEventListener("DOMContentLoaded", () => {
+      setupTheme();
+      loadSavedSentences();
+    });
+
+    function setupTheme() {
+      const themeToggle = document.getElementById("theme-toggle");
+      const storedTheme = localStorage.getItem("theme");
+
+      if (storedTheme === "light") {
+        document.body.classList.remove("dark-mode");
+        document.body.classList.add("light-mode");
+      } else {
+        document.body.classList.remove("light-mode");
+        document.body.classList.add("dark-mode");
+      }
+
+      themeToggle.addEventListener("click", () => {
+        if (document.body.classList.contains("dark-mode")) {
+          document.body.classList.remove("dark-mode");
+          document.body.classList.add("light-mode");
+          localStorage.setItem("theme", "light");
+        } else {
+          document.body.classList.remove("light-mode");
+          document.body.classList.add("dark-mode");
+          localStorage.setItem("theme", "dark");
+        }
+      });
+    }
+
+    // Load saved sentences from API
+    async function loadSavedSentences() {
+      const container = document.getElementById("saved-grid-container");
+      
+      try {
+        const response = await fetch("/api/saved");
+        if (!response.ok) throw new Error("Failed to fetch saved sentences");
+        
+        const data = await response.json();
+        container.innerHTML = "";
+        
+        if (data.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; color: var(--text-secondary); padding: 50px; background: var(--input-bg); border: 1px dashed var(--panel-border); border-radius: 16px;">
+              <p style="font-size: 1.1rem; font-weight: 500;">சேமிக்கப்பட்ட வாக்கியங்கள் எதுவும் இல்லை.</p>
+              <span style="font-size: 0.8rem; opacity: 0.8;">No saved sentences found. Generate and save sentences on the home screen!</span>
+            </div>
+          `;
+          return;
+        }
+        
+        data.forEach(item => {
+          // Format sentence display (dialogue vs normal statement)
+          let contentHTML = "";
+          let speakText = item.sentence;
+          
+          if (item.sentence_type === "dialogue" && item.sentence.includes("|")) {
+            const dialogueLines = item.sentence.split("|");
+            contentHTML = `<div style="display: flex; flex-direction: column; gap: 6px; padding: 4px 0;">`;
+            dialogueLines.forEach(line => {
+              contentHTML += `<div style="font-size: 1.05rem; font-family: var(--font-ta); line-height: 1.4;">${line.trim()}</div>`;
+            });
+            contentHTML += `</div>`;
+            // Remove pipe character for speak audio playback
+            speakText = item.sentence.split("|").join(" ");
+          } else {
+            contentHTML = `
+              <div style="font-family: var(--font-ta); font-size: 1.25rem; font-weight: 500; color: var(--text-primary); line-height: 1.4;">
+                ${item.sentence}
+              </div>
+            `;
+          }
+          
+          const cleanSpeakText = speakText.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+          
+          const cardHTML = `
+            <div class="saved-card" id="card-${item.id}">
+              <div style="flex: 1;">
+                ${contentHTML}
+                <div class="saved-meta">
+                  <span style="text-transform: capitalize;">${item.sentence_type}</span>
+                  <span>•</span>
+                  <span style="text-transform: capitalize;">${item.tense}</span>
+                  <span>•</span>
+                  <span>${new Date(item.saved_at).toLocaleDateString()}</span>
+                </div>
+              </div>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="speak-btn" style="padding: 8px 12px; font-size: 0.75rem;" onclick="speakSaved('${cleanSpeakText}', this)" title="Speak">
+                  <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                  </svg>
+                </button>
+                <button class="delete-btn" onclick="deleteSaved(${item.id})">Delete</button>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML("beforeend", cardHTML);
+        });
+      } catch (error) {
+        console.error("Saved sentences load error:", error);
+        container.innerHTML = `
+          <div style="text-align: center; color: #ef4444; padding: 50px; background: var(--input-bg); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 16px;">
+            சேமித்த வாக்கியங்களை ஏற்றுவதில் பிழை. (Error loading saved sentences.)
+          </div>
+        `;
+      }
+    }
+
+    // Delete saved sentence
+    async function deleteSaved(id) {
+      if (!confirm("Are you sure you want to delete this saved entry?")) return;
+      
+      try {
+        const response = await fetch(`/api/saved/${id}`, { method: "DELETE" });
+        if (!response.ok) throw new Error("Failed to delete entry");
+        
+        const card = document.getElementById(`card-${id}`);
+        if (card) {
+          card.style.opacity = "0";
+          card.style.transform = "scale(0.95)";
+          setTimeout(() => {
+            card.remove();
+            // Reload if empty
+            if (document.querySelectorAll('.saved-card').length === 0) {
+              loadSavedSentences();
+            }
+          }, 300);
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+        alert("நீக்குவதில் பிழை. (Failed to delete sentence.)");
+      }
+    }
+
+    // Play TTS
+    async function speakSaved(text, btn) {
+      if (isPlaying) return;
+      if (!text) return;
+      
+      isPlaying = true;
+      btn.classList.add("speaking");
+      const originalHTML = btn.innerHTML;
+      btn.innerHTML = `
+        <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 2a10 10 0 0 1 10 10"></path>
+        </svg>
+      `;
+      
+      try {
+        const response = await fetch("/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text: text })
+        });
+        
+        if (!response.ok) throw new Error("TTS failed");
+        
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        const audioEl = document.getElementById("saved-tts-audio");
+        audioEl.src = audioUrl;
+        
+        audioEl.onended = () => {
+          btn.classList.remove("speaking");
+          btn.innerHTML = originalHTML;
+          URL.revokeObjectURL(audioUrl);
+          isPlaying = false;
+        };
+        
+        audioEl.onerror = () => {
+          isPlaying = false;
+          btn.classList.remove("speaking");
+          btn.innerHTML = originalHTML;
+        };
+        
+        await audioEl.play();
+      } catch (error) {
+        console.error("TTS playback error:", error);
+        btn.classList.remove("speaking");
+        btn.innerHTML = originalHTML;
+        isPlaying = false;
+      }
+    }
+  </script>
+  
+  <style>
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+</html>

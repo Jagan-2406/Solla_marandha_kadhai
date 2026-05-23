@@ -1,5 +1,7 @@
 // Global variables to store current generated results and state
 let currentResultText = "";
+let currentSentenceType = "";
+let currentTense = "";
 let isAudioPlaying = false;
 
 // Initialize on DOM load
@@ -107,6 +109,8 @@ async function generateSentence() {
     }
 
     const data = await response.json();
+    currentSentenceType = sentenceType;
+    currentTense = tense;
     displayResults(data, noun, verb, tense, gender);
     
     // Reset status to Success
@@ -125,14 +129,17 @@ async function generateSentence() {
   }
 }
 
-// Display results based on response types
 function displayResults(data, noun, verb, tense, gender) {
   const placeholder = document.getElementById("result-placeholder");
   const singleCard = document.getElementById("single-result-card");
   const dialogueCard = document.getElementById("dialogue-result-card");
+  const variationsBox = document.getElementById("variations-box");
 
-  // Hide placeholder
+  // Hide placeholder and variations box
   placeholder.classList.add("hidden");
+  if (variationsBox) {
+    variationsBox.style.display = "none";
+  }
 
   // Format a friendly English structural breakdown for learning
   const breakdown = getBreakdownString(noun, verb, tense, gender, data.type);
@@ -149,6 +156,9 @@ function displayResults(data, noun, verb, tense, gender) {
     // Show dialogue card
     singleCard.classList.add("hidden");
     dialogueCard.classList.remove("hidden");
+    
+    // Store full dialogue as spaces for speech play, pipes for saving
+    currentResultText = data.output.map(d => d.line).join(" ");
 
     const bubblesContainer = document.getElementById("chat-bubbles-container");
     bubblesContainer.innerHTML = ""; // Clear existing bubbles
@@ -254,4 +264,129 @@ async function speakText(text, buttonElement) {
     isAudioPlaying = false;
     alert("Audio playback failed.");
   }
+}
+
+// Save generated sentence to the database
+async function saveSentence() {
+  if (!currentResultText) return;
+  
+  const saveBtn = document.getElementById("save-btn");
+  const saveBtnText = document.getElementById("save-btn-text");
+  
+  saveBtn.disabled = true;
+  saveBtnText.textContent = "சேமிக்கிறது... (Saving...)";
+  
+  try {
+    // For dialogues we save using pipes to represent turns, otherwise original output
+    const sentenceToSave = currentSentenceType === 'dialogue'
+      ? currentResultText.split(" ").join(" | ") 
+      : currentResultText;
+      
+    const response = await fetch("/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        sentence: sentenceToSave,
+        sentence_type: currentSentenceType,
+        tense: currentTense
+      })
+    });
+    
+    if (!response.ok) throw new Error("Failed to save");
+    
+    saveBtnText.textContent = "சேமிக்கப்பட்டது! (Saved! ✓)";
+    setTimeout(() => {
+      saveBtnText.textContent = "சேமி (Save)";
+      saveBtn.disabled = false;
+    }, 2000);
+  } catch (error) {
+    console.error("Save error:", error);
+    alert("சேமிப்பதில் பிழை ஏற்பட்டது. (Failed to save sentence.)");
+    saveBtnText.textContent = "சேமி (Save)";
+    saveBtn.disabled = false;
+  }
+}
+
+// Get AI variations for the current sentence
+async function getVariations() {
+  if (!currentResultText) return;
+  
+  const varBtn = document.getElementById("var-btn");
+  const variationsBox = document.getElementById("variations-box");
+  const variationsContent = document.getElementById("variations-content");
+  
+  const originalHTML = varBtn.innerHTML;
+  varBtn.disabled = true;
+  varBtn.innerHTML = "<span>✨ Loading...</span>";
+  
+  try {
+    const response = await fetch("/variations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ sentence: currentResultText })
+    });
+    
+    if (!response.ok) throw new Error("Failed to fetch variations");
+    
+    const data = await response.json();
+    variationsContent.innerHTML = data.variations.replace(/\n/g, "<br>");
+    variationsBox.style.display = "block";
+    
+    // Scroll variations box into viewport cleanly
+    variationsBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  } catch (error) {
+    console.error("Variations error:", error);
+    alert("இணை வாக்கியங்களை உருவாக்குவதில் பிழை. (Failed to load variations.)");
+  } finally {
+    varBtn.disabled = false;
+    varBtn.innerHTML = originalHTML;
+  }
+}
+
+// Speech recognition for hands-free typing
+function startVoiceInput(fieldId) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Speech recognition is not supported in this browser. Please try Chrome or Edge.");
+    return;
+  }
+  
+  const micButton = document.getElementById(`${fieldId}-mic`);
+  const inputField = document.getElementById(fieldId);
+  
+  const recognition = new SpeechRecognition();
+  recognition.lang = "ta-IN"; // Tamil (India)
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  
+  recognition.onstart = () => {
+    micButton.classList.add("recording");
+    inputField.placeholder = "கேட்கிறது... (Listening...)";
+  };
+  
+  recognition.onend = () => {
+    micButton.classList.remove("recording");
+    inputField.placeholder = fieldId === "noun" ? "e.g. பால், சோறு, புத்தகம்" : "e.g. குடி, சாப்பிடு, படி, செய்";
+  };
+  
+  recognition.onresult = (event) => {
+    const speechResult = event.results[0][0].transcript;
+    // Clean up trailing periods
+    inputField.value = speechResult.replace(/\.$/, "");
+    // Briefly flash active style
+    inputField.style.transform = "scale(1.02)";
+    setTimeout(() => inputField.style.transform = "none", 200);
+  };
+  
+  recognition.onerror = (event) => {
+    console.error("Speech recognition error:", event.error);
+    alert(`Voice input error: ${event.error}`);
+    micButton.classList.remove("recording");
+  };
+  
+  recognition.start();
 }

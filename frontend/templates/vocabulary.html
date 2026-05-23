@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>சொல்லகராதி - Tamil Vocabulary Browser</title>
+  <meta name="description" content="Browse and search Tamil nouns, verbs and meanings.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-mode">
+  <div class="background-decor">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-badge">NLP</span>
+        <div class="title-meta">
+          <h1>சொல்லகராதி</h1>
+          <p>Tamil Vocabulary Browser</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <nav class="app-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/vocabulary" class="nav-link active">Vocabulary</a>
+          <a href="/saved" class="nav-link">Saved</a>
+          <a href="/chatbot" class="nav-link">AI Tutor</a>
+        </nav>
+        <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main style="display: flex; flex-direction: column; gap: 20px;">
+      <section class="panel">
+        <div class="search-wrapper">
+          <label class="section-label" style="margin-bottom: 8px; display: block;">சொற்களைத் தேடு (Search Words)</label>
+          <div class="input-wrapper">
+            <input type="text" id="vocab-search" oninput="loadVocabulary()" placeholder="தமிழ் அல்லது ஆங்கிலத்தில் தேடுக... (Type Tamil word or English meaning...)">
+            <div class="input-glow"></div>
+          </div>
+        </div>
+
+        <div class="vocab-table-container">
+          <table class="vocab-table" id="vocab-table">
+            <thead>
+              <tr>
+                <th>தமிழ் (Tamil)</th>
+                <th>பொருள் (English Meaning)</th>
+                <th>வகை (Category)</th>
+              </tr>
+            </thead>
+            <tbody id="vocab-table-body">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 தமிழ் வாக்கிய உருவாக்கி | AI-Based Tamil Learning Platform</p>
+    </footer>
+  </div>
+
+  <script>
+    // Theme setup and sync
+    document.addEventListener("DOMContentLoaded", () => {
+      setupTheme();
+      loadVocabulary();
+    });
+
+    function setupTheme() {
+      const themeToggle = document.getElementById("theme-toggle");
+      const storedTheme = localStorage.getItem("theme");
+
+      if (storedTheme === "light") {
+        document.body.classList.remove("dark-mode");
+        document.body.classList.add("light-mode");
+      } else {
+        document.body.classList.remove("light-mode");
+        document.body.classList.add("dark-mode");
+      }
+
+      themeToggle.addEventListener("click", () => {
+        if (document.body.classList.contains("dark-mode")) {
+          document.body.classList.remove("dark-mode");
+          document.body.classList.add("light-mode");
+          localStorage.setItem("theme", "light");
+        } else {
+          document.body.classList.remove("light-mode");
+          document.body.classList.add("dark-mode");
+          localStorage.setItem("theme", "dark");
+        }
+      });
+    }
+
+    // Load vocabulary from Flask API
+    async function loadVocabulary() {
+      const query = document.getElementById("vocab-search").value.trim();
+      const tbody = document.getElementById("vocab-table-body");
+      
+      try {
+        const response = await fetch(`/api/vocabulary?search=${encodeURIComponent(query)}`);
+        if (!response.ok) throw new Error("Failed to fetch vocabulary");
+        
+        const data = await response.json();
+        tbody.innerHTML = "";
+        
+        if (data.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="3" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                சொற்கள் எதுவும் காணப்படவில்லை. (No words found.)
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        
+        data.forEach(item => {
+          const categoryClass = item.category.toLowerCase() === "noun" ? "badge-noun" : "badge-verb";
+          const rowHTML = `
+            <tr>
+              <td style="font-family: var(--font-ta); font-size: 1.2rem; font-weight: 500; color: var(--text-primary);">
+                ${item.tamil_word}
+              </td>
+              <td style="color: var(--text-secondary); font-size: 0.95rem;">
+                ${item.english_meaning}
+              </td>
+              <td>
+                <span class="vocab-category-badge ${categoryClass}">${item.category}</span>
+              </td>
+            </tr>
+          `;
+          tbody.insertAdjacentHTML("beforeend", rowHTML);
+        });
+      } catch (error) {
+        console.error("Vocabulary load error:", error);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="3" style="text-align: center; color: #ef4444; padding: 30px;">
+              சொற்களை ஏற்றுவதில் பிழை ஏற்பட்டது. (Failed to load vocabulary list.)
+            </td>
+          </tr>
+        `;
+      }
+    }
+  </script>
+</body>
+</html>

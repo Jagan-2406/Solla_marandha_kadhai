@@ -41,3 +41,8 @@ logs/
 
 # Node
 node_modules/
+
+# Tamil NLP Database and static audio
+backend/tamil_nlp.db
+frontend/static/audio/
+backend/static/audio/

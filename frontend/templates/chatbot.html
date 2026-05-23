@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>அம்மா தமிழ் ஆசிரியர் - AI Tamil Tutor Chatbot</title>
+  <meta name="description" content="Chat with Amma, your friendly AI Tamil language tutor.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-mode">
+  <div class="background-decor">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-badge">NLP</span>
+        <div class="title-meta">
+          <h1>அம்மா தமிழ் ஆசிரியர்</h1>
+          <p>Amma — AI Tamil Tutor Chatbot 🌺</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <nav class="app-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/vocabulary" class="nav-link">Vocabulary</a>
+          <a href="/saved" class="nav-link">Saved</a>
+          <a href="/chatbot" class="nav-link active">AI Tutor</a>
+        </nav>
+        <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main style="display: flex; flex-direction: column; gap: 20px;">
+      <section class="panel">
+        <label class="section-label">உரையாடல் (Tutor Conversation)</label>
+        
+        <!-- Scrollable Chat window -->
+        <div class="chat-container" id="chat-window">
+          <!-- Greeting -->
+          <div class="chat-bubble left tutor">
+            <div class="avatar" style="background-color: var(--accent-color);">அ</div>
+            <div class="bubble-content">
+              <div class="bubble-speaker">Amma 🌺</div>
+              <div class="bubble-text" style="font-family: var(--font-en); font-size: 1rem; font-weight: normal;">
+                வணக்கம்! Hello! I am Amma, your friendly AI Tamil language tutor. Ask me anything about Tamil nouns, verbs, sentence structure, or conjugations!
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Input field wrapper -->
+        <div class="chat-input-wrapper">
+          <div class="input-wrapper" style="flex-grow: 1;">
+            <input type="text" id="chat-input" placeholder="Ask a question about Tamil grammar..." required>
+            <div class="input-glow"></div>
+          </div>
+          <button type="button" class="chat-send-btn" onclick="sendMessage()" id="send-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 தமிழ் வாக்கிய உருவாக்கி | AI-Based Tamil Learning Platform</p>
+    </footer>
+  </div>
+
+  <script>
+    let chatHistory = [];
+
+    // Theme setup and sync
+    document.addEventListener("DOMContentLoaded", () => {
+      setupTheme();
+      
+      const chatInput = document.getElementById("chat-input");
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
+    });
+
+    function setupTheme() {
+      const themeToggle = document.getElementById("theme-toggle");
+      const storedTheme = localStorage.getItem("theme");
+
+      if (storedTheme === "light") {
+        document.body.classList.remove("dark-mode");
+        document.body.classList.add("light-mode");
+      } else {
+        document.body.classList.remove("light-mode");
+        document.body.classList.add("dark-mode");
+      }
+
+      themeToggle.addEventListener("click", () => {
+        if (document.body.classList.contains("dark-mode")) {
+          document.body.classList.remove("dark-mode");
+          document.body.classList.add("light-mode");
+          localStorage.setItem("theme", "light");
+        } else {
+          document.body.classList.remove("light-mode");
+          document.body.classList.add("dark-mode");
+          localStorage.setItem("theme", "dark");
+        }
+      });
+    }
+
+    // Append a message bubble to the chat layout
+    function appendBubble(senderName, messageText, isTutor) {
+      const chatWindow = document.getElementById("chat-window");
+      const bubbleSide = isTutor ? "left tutor" : "right learner";
+      const initial = isTutor ? "அ" : "மா";
+      const fontStyle = isTutor ? "" : 'style="font-family: var(--font-en); font-size: 1rem; font-weight: normal;"';
+      
+      const bubbleHTML = `
+        <div class="chat-bubble ${bubbleSide}">
+          <div class="avatar">${initial}</div>
+          <div class="bubble-content">
+            <div class="bubble-speaker">${senderName}</div>
+            <div class="bubble-text" ${isTutor ? '' : fontStyle}>${messageText}</div>
+          </div>
+        </div>
+      `;
+      chatWindow.insertAdjacentHTML("beforeend", bubbleHTML);
+      // Auto scroll
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // Send user message to tutor API
+    async function sendMessage() {
+      const input = document.getElementById("chat-input");
+      const sendBtn = document.getElementById("send-btn");
+      const text = input.value.trim();
+      
+      if (!text) return;
+      
+      // Append user bubble
+      appendBubble("Learner", text, false);
+      input.value = "";
+      input.disabled = true;
+      sendBtn.disabled = true;
+      
+      chatHistory.push({ role: "user", content: text });
+      
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: text,
+            history: chatHistory
+          })
+        });
+        
+        if (!response.ok) throw new Error("Failed to reach tutor API");
+        
+        const data = await response.json();
+        
+        // Append tutor bubble
+        appendBubble("Amma 🌺", data.reply, true);
+        chatHistory.push({ role: "assistant", content: data.reply });
+        
+        // Keep history capped to last 20 messages to manage context size
+        if (chatHistory.length > 20) {
+          chatHistory = chatHistory.slice(-20);
+        }
+      } catch (error) {
+        console.error("Chatbot error:", error);
+        appendBubble("Amma 🌺", "Sorry, I had trouble processing that request. Please try again! (உரையாடுவதில் பிழை ஏற்பட்டது.)", true);
+      } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    }
+  </script>
+</body>
+</html>
