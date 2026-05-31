@@ -22,16 +22,18 @@ api_key = os.environ.get('ANTHROPIC_API_KEY')
 gemini_key = os.environ.get('GEMINI_API_KEY') or api_key
 
 ai_client = None
+gemini_client = None
 gemini_enabled = False
 
-# Try importing google.generativeai defensively
+# Use the new google-genai SDK
 try:
-    import google.generativeai as genai
+    from google import genai
     if gemini_key and gemini_key.startswith('AIzaSy'):
-        genai.configure(api_key=gemini_key)
+        gemini_client = genai.Client(api_key=gemini_key)
         gemini_enabled = True
+        print("Gemini AI enabled successfully (google-genai SDK).")
 except ImportError:
-    print("google-generativeai not installed yet. Running in mock fallback mode.")
+    print("google-genai not installed. Run: pip install google-genai")
 except Exception as e:
     print(f"Error configuring Gemini: {e}")
 
@@ -162,29 +164,35 @@ def variations():
         sent = data.get('sentence', '').strip()
         if not sent:
             return jsonify({'error': 'Sentence is required'}), 400
-            
-        if not ai_client:
-            # Fallback high-quality Tamil language learning variations if no key is configured
-            return jsonify({
-                'variations': (
-                    "1. " + sent + " தான் (Emphatic statement - Indeed this is what it is)\n"
-                    "2. " + sent.replace("நான்", "என்னால்").replace("குடிக்கிறேன்", "குடிக்கப்பட்டது") + " (Passive voice format)\n"
-                    "3. " + sent + " என்று நினைக்கிறேன் (Conjectural format - I think that...)"
-                )
-            })
-            
+
         prompt = f'''You are a Tamil language teacher.
 The student generated this Tamil sentence: {sent}
 Give 3 alternative ways to express the same meaning in Tamil.
 Format: number each line. Tamil sentence first, then English meaning in brackets.
 Keep it simple for beginners.'''
-        
-        msg = ai_client.messages.create(
-            model='claude-3-5-sonnet-latest',
-            max_tokens=400,
-            messages=[{'role': 'user', 'content': prompt}]
-        )
-        return jsonify({'variations': msg.content[0].text})
+
+        if gemini_client:
+            response = gemini_client.models.generate_content(
+                model='gemini-2.0-flash',
+                contents=prompt
+            )
+            return jsonify({'variations': response.text})
+        elif ai_client:
+            msg = ai_client.messages.create(
+                model='claude-3-5-sonnet-latest',
+                max_tokens=400,
+                messages=[{'role': 'user', 'content': prompt}]
+            )
+            return jsonify({'variations': msg.content[0].text})
+        else:
+            # Fallback high-quality Tamil language learning variations if no key is configured
+            return jsonify({
+                'variations': (
+                    "1. " + sent + " தான் (Emphatic statement - Indeed this is what it is)\n"
+                    "2. " + sent + " என்று நினைக்கிறேன் (Conjectural format - I think that...)\n"
+                    "3. " + sent + " இல்லையா? (Tag question format)"
+                )
+            })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -194,42 +202,63 @@ def chat():
         data = request.get_json() or {}
         user_msg = data.get('message', '').strip()
         history = data.get('history', [])
-        
+
         if not user_msg:
             return jsonify({'error': 'Message is required'}), 400
-            
-        if not ai_client:
-            # High-quality educational chatbot fallback responses
-            lower_msg = user_msg.lower()
-            if "hello" in lower_msg or "வணக்கம்" in lower_msg:
-                reply = "வணக்கம்! Hello! I am Amma. Ask me about Tamil grammar (like 'verb conjugation' or 'noun rules')."
-            elif "verbs" in lower_msg or "verb" in lower_msg:
-                reply = "In Tamil, verbs come at the end of the sentence. For example: நான் (Subject) + பால் (Object) + குடிக்கிறேன் (Verb)."
-            elif "tense" in lower_msg or "present" in lower_msg:
-                reply = "Present tense uses the marker 'கிற' (kira). Example: படிக்கிறேன் (pa-di-kki-ren - I study/read)."
-            else:
-                reply = f"வணக்கம்! I received: '{user_msg}'. Set your ANTHROPIC_API_KEY in backend/.env to unlock interactive Claude AI learning sessions!"
-            return jsonify({'reply': reply})
-            
-        system = '''You are a friendly Tamil language tutor named 'Amma'.
+
+        system_prompt = '''You are a friendly Tamil language tutor named 'Amma'.
 You help beginners learn Tamil grammar and sentences.
 Reply in simple English with Tamil examples.
 Always include the Tamil script alongside transliteration.
 Keep answers short — 2 to 4 sentences max.'''
-        
-        formatted_history = []
-        for h in history:
-            formatted_history.append({'role': h.get('role', 'user'), 'content': h.get('content', '')})
-            
-        messages = formatted_history + [{'role': 'user', 'content': user_msg}]
-        
-        msg = ai_client.messages.create(
-            model='claude-3-5-sonnet-latest',
-            max_tokens=300,
-            system=system,
-            messages=messages
-        )
-        return jsonify({'reply': msg.content[0].text})
+
+        if gemini_client:
+            # Build conversation history for new google-genai SDK
+            from google.genai import types
+            chat_history = []
+            for h in history:
+                role = 'user' if h.get('role') == 'user' else 'model'
+                chat_history.append(types.Content(
+                    role=role,
+                    parts=[types.Part(text=h.get('content', ''))]
+                ))
+            chat_session = gemini_client.chats.create(
+                model='gemini-2.0-flash',
+                history=chat_history,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_prompt
+                )
+            )
+            response = chat_session.send_message(user_msg)
+            return jsonify({'reply': response.text})
+
+        elif ai_client:
+            formatted_history = [
+                {'role': h.get('role', 'user'), 'content': h.get('content', '')}
+                for h in history
+            ]
+            messages = formatted_history + [{'role': 'user', 'content': user_msg}]
+            msg = ai_client.messages.create(
+                model='claude-3-5-sonnet-latest',
+                max_tokens=300,
+                system=system_prompt,
+                messages=messages
+            )
+            return jsonify({'reply': msg.content[0].text})
+
+        else:
+            # Fallback responses when no AI key is configured
+            lower_msg = user_msg.lower()
+            if "hello" in lower_msg or "வணக்கம்" in lower_msg:
+                reply = "வணக்கம்! Hello! I am Amma. Ask me about Tamil grammar (like 'verb conjugation' or 'noun rules')."
+            elif "verb" in lower_msg:
+                reply = "In Tamil, verbs come at the end of the sentence. Example: நான் (Subject) + பால் (Object) + குடிக்கிறேன் (Verb)."
+            elif "tense" in lower_msg or "present" in lower_msg:
+                reply = "Present tense uses the marker 'கிற' (kira). Example: படிக்கிறேன் (pa-di-kki-ren - I study/read)."
+            else:
+                reply = f"வணக்கம்! Please add a valid GEMINI_API_KEY in backend/.env to unlock full AI responses!"
+            return jsonify({'reply': reply})
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
