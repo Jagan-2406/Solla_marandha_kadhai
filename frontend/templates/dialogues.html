@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>உரையாடல் நூலகம் - Tamil Dialogue Library</title>
+  <meta name="description" content="Browse real-life Tamil dialogue scripts for school, office, daily life, and interviews.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Tamil:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#1b1c2d">
+</head>
+<body class="dark-mode">
+  <div class="background-decor">
+    <div class="glow-sphere sphere-1"></div>
+    <div class="glow-sphere sphere-2"></div>
+  </div>
+
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="logo-badge">NLP</span>
+        <div class="title-meta">
+          <h1>உரையாடல் நூலகம்</h1>
+          <p>Tamil Dialogue Library 🗣️</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <nav class="app-nav">
+          <a href="/" class="nav-link">Home</a>
+          <a href="/vocabulary" class="nav-link">Vocabulary</a>
+          <a href="/dialogues" class="nav-link active">Dialogues</a>
+          <a href="/quiz" class="nav-link">Quiz</a>
+          <a href="/grammar" class="nav-link">Grammar</a>
+          <a href="/saved" class="nav-link">Saved</a>
+          <a href="/chatbot" class="nav-link">AI Tutor</a>
+          <a href="/dashboard" class="nav-link">Dashboard</a>
+        </nav>
+        <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <main style="display: flex; flex-direction: column; gap: 24px;">
+      <section class="panel">
+        <h2>வாழ்க்கை உரையாடல்கள் <span class="sub-heading">(Real-Life Conversations)</span></h2>
+        <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;">
+          Browse pre-built Tamil dialogues from real-life situations. Listen to each line with TTS. Toggle English translations.
+        </p>
+
+        <!-- Scenario Filter -->
+        <div class="scenario-filters" id="scenario-filters">
+          <button class="scenario-btn active" onclick="filterDialogues('all', this)" id="filter-all">🌐 All</button>
+          <button class="scenario-btn" onclick="filterDialogues('school', this)" id="filter-school">🏫 School</button>
+          <button class="scenario-btn" onclick="filterDialogues('daily', this)" id="filter-daily">🏠 Daily Life</button>
+          <button class="scenario-btn" onclick="filterDialogues('office', this)" id="filter-office">💼 Office</button>
+          <button class="scenario-btn" onclick="filterDialogues('interview', this)" id="filter-interview">📋 Interview</button>
+          <button class="scenario-btn" onclick="filterDialogues('family', this)" id="filter-family">👨‍👩‍👧 Family</button>
+        </div>
+
+        <!-- Translation toggle -->
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+          <label class="toggle-label" for="translation-toggle">Show English Translations</label>
+          <button id="translation-toggle" class="toggle-btn active" onclick="toggleTranslations()">ON</button>
+        </div>
+
+        <!-- Dialogue Cards Grid -->
+        <div id="dialogue-grid" class="dialogue-grid">
+          <div style="text-align: center; padding: 40px; color: var(--text-secondary);">
+            <div class="loader-dots" style="justify-content: center;"><span></span><span></span><span></span></div>
+            <p style="margin-top: 10px;">Loading dialogues...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>&copy; 2026 தமிழ் வாக்கிய உருவாக்கி | AI-Based Tamil Learning Platform</p>
+    </footer>
+  </div>
+
+  <audio id="tts-audio-element" style="display: none;"></audio>
+
+  <script>
+    let allDialogues   = [];
+    let showTranslation = true;
+    let isAudioPlaying  = false;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupTheme();
+      loadDialogues();
+    });
+
+    async function loadDialogues(scenario = 'all') {
+      const grid = document.getElementById('dialogue-grid');
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);"><div class="loader-dots" style="justify-content:center"><span></span><span></span><span></span></div><p style="margin-top:10px">Loading...</p></div>';
+      try {
+        const url = scenario === 'all' ? '/api/dialogues' : `/api/dialogues?scenario=${scenario}`;
+        const res  = await fetch(url);
+        const data = await res.json();
+        allDialogues = data;
+        renderDialogues(data);
+      } catch (err) {
+        grid.innerHTML = `<p style="color:#ef4444;text-align:center;">Error loading dialogues: ${err.message}</p>`;
+      }
+    }
+
+    function renderDialogues(dialogues) {
+      const grid = document.getElementById('dialogue-grid');
+      if (!dialogues.length) {
+        grid.innerHTML = '<p style="text-align:center;color:var(--text-secondary);padding:40px;">No dialogues found for this category.</p>';
+        return;
+      }
+      grid.innerHTML = dialogues.map((d, idx) => `
+        <div class="dialogue-card" data-id="${d.id}">
+          <div class="dialogue-card-header">
+            <div>
+              <span class="dialogue-scenario-badge scenario-${d.scenario}">${scenarioLabel(d.scenario)}</span>
+              <span class="difficulty-badge difficulty-${d.difficulty}">${d.difficulty}</span>
+            </div>
+            <h3 class="dialogue-title">${d.title}</h3>
+          </div>
+          <div class="dialogue-exchange">
+            <!-- Speaker A -->
+            <div class="dialogue-line line-a">
+              <div class="dialogue-avatar avatar-a">அ</div>
+              <div class="dialogue-bubble-wrap">
+                <div class="dialogue-speaker-name">Speaker A</div>
+                <div class="dialogue-text tamil-text">${d.speaker_a}</div>
+                <div class="dialogue-translation ${showTranslation ? '' : 'hidden'}">${d.english_a}</div>
+              </div>
+              <button class="bubble-speak-btn" onclick="speakLine('${escapeStr(d.speaker_a)}', this)" title="Listen">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+            </div>
+            <!-- Speaker B -->
+            <div class="dialogue-line line-b">
+              <div class="dialogue-avatar avatar-b">ஆ</div>
+              <div class="dialogue-bubble-wrap">
+                <div class="dialogue-speaker-name">Speaker B</div>
+                <div class="dialogue-text tamil-text">${d.speaker_b}</div>
+                <div class="dialogue-translation ${showTranslation ? '' : 'hidden'}">${d.english_b}</div>
+              </div>
+              <button class="bubble-speak-btn" onclick="speakLine('${escapeStr(d.speaker_b)}', this)" title="Listen">
+                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="dialogue-card-footer">
+            <button class="secondary-btn" style="padding:6px 14px;font-size:0.85rem;" onclick="practiceDialogue(${idx})">
+              🎯 Practice
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function scenarioLabel(sc) {
+      const map = {school:'🏫 School', daily:'🏠 Daily', office:'💼 Office', interview:'📋 Interview', family:'👨‍👩‍👧 Family'};
+      return map[sc] || sc;
+    }
+
+    function escapeStr(s) { return s.replace(/'/g, "\\'").replace(/"/g, '\\"'); }
+
+    function filterDialogues(scenario, btn) {
+      document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadDialogues(scenario);
+    }
+
+    function toggleTranslations() {
+      showTranslation = !showTranslation;
+      const btn = document.getElementById('translation-toggle');
+      btn.textContent = showTranslation ? 'ON' : 'OFF';
+      btn.classList.toggle('active', showTranslation);
+      document.querySelectorAll('.dialogue-translation').forEach(el => {
+        el.classList.toggle('hidden', !showTranslation);
+      });
+    }
+
+    async function speakLine(text, btn) {
+      if (isAudioPlaying) return;
+      isAudioPlaying = true;
+      btn.style.opacity = '0.5';
+      try {
+        const res  = await fetch('/tts', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ text })
+        });
+        const blob = await res.blob();
+        const url  = URL.createObjectURL(blob);
+        const audio = document.getElementById('tts-audio-element');
+        audio.src   = url;
+        audio.onended = () => { URL.revokeObjectURL(url); isAudioPlaying = false; btn.style.opacity = '1'; };
+        await audio.play();
+      } catch (e) {
+        isAudioPlaying = false; btn.style.opacity = '1';
+      }
+    }
+
+    function practiceDialogue(idx) {
+      const d = allDialogues[idx];
+      if (!d) return;
+      // Speak A then B in sequence
+      speakLine(d.speaker_a, document.createElement('button'));
+      setTimeout(() => speakLine(d.speaker_b, document.createElement('button')), 3000);
+      // Award points
+      fetch('/api/award_points', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'dialogue_practice'})});
+    }
+
+    function setupTheme() {
+      const toggle = document.getElementById('theme-toggle');
+      const stored = localStorage.getItem('theme');
+      if (stored === 'light') { document.body.classList.replace('dark-mode', 'light-mode'); }
+      toggle.addEventListener('click', () => {
+        if (document.body.classList.contains('dark-mode')) {
+          document.body.classList.replace('dark-mode', 'light-mode');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.body.classList.replace('light-mode', 'dark-mode');
+          localStorage.setItem('theme', 'dark');
+        }
+      });
+    }
+  </script>
+</body>
+</html>

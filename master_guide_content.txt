@@ -1,0 +1,760 @@
+﻿
+α«ñα««α«┐α«┤α»ì α«╡α«╛α«òα»ìα«òα«┐α«» α«ëα«░α»üα«╡α«╛α«òα»ìα«òα«┐
+Tamil Dialogue Generator & Sentence Builder
+AI-Based Tamil Language Learning Platform
+Complete Hackathon-Ready Developer & Feature Guide
+
+Γ£ª  PART A  ΓÇö  Project Foundation & Architecture
+Γ£ª  PART B  ΓÇö  Phase 1: Initial Platform (Grammar Engine + UI)
+Γ£ª  PART C  ΓÇö  Phase 2: Database Integration
+Γ£ª  PART D  ΓÇö  Phase 3: Voice Features (TTS + Speech Input)
+Γ£ª  PART E  ΓÇö  Phase 4: AI Enhancement & Chatbot
+Γ£ª  PART F  ΓÇö  Phase 5: Deployment & Mobile PWA
+Γ£ª  PART G  ΓÇö  Extended Feature Modules (New)
+Γ£ª  PART H  ΓÇö  Database Design (Full Schema)
+Γ£ª  PART I  ΓÇö  System Architecture & Workflow Diagrams
+Γ£ª  PART J  ΓÇö  UI/UX Screen Descriptions
+Γ£ª  PART K  ΓÇö  Hackathon Presentation Guide
+Γ£ª  PART L  ΓÇö  Future Scope & Roadmap
+
+Step-by-step code ┬╖ Full source ┬╖ Beginner-friendly ┬╖ Hackathon ready
+
+PART A ΓÇö Project Foundation & Architecture
+
+
+A1. Project Overview
+The Tamil Dialogue Generator & Sentence Builder is a full-stack AI-powered web application designed to help students, beginners, and language enthusiasts master Tamil grammar, vocabulary, and conversation. The system accepts user inputs ΓÇö noun, verb, tense, gender ΓÇö and generates grammatically accurate Tamil sentences and real-life dialogues instantly.
+
+≡ƒÜÇ PHASE: This document covers the complete project from scratch through all 5 build phases, then extends into advanced features for a hackathon-winning platform.
+
+A2. Problem Statement
+
+A3. Solution Architecture Overview
+The platform follows a 3-tier architecture with an AI/NLP processing layer in the middle:
+
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé                 FRONTEND  (Browser / PWA)                Γöé
+Γöé   React UI  ΓåÉΓåÆ  REST API calls  ΓåÉΓåÆ  WebSocket (chat)    Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+                   Γöé  HTTP / JSON                           
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓû╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé           BACKEND  (Python Flask / FastAPI)              Γöé
+Γöé  app.py ΓåÆ grammar_engine ΓåÆ db_manager ΓåÆ ai_service      Γöé
+Γöé  voice_service ΓåÆ quiz_engine ΓåÆ analytics_service        Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+                   Γöé  SQL / ORM                             
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓû╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé              DATABASE  (SQLite ΓåÆ PostgreSQL)             Γöé
+Γöé  vocabulary | grammar_rules | saved_sentences | users   Γöé
+Γöé  quiz_results | badges | learning_sessions | analytics  Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+A4. Complete Technology Stack
+
+A5. Feature Module Map
+
+
+PHASE 1  Initial Platform & Grammar Engine
+Flask ┬╖ HTML/CSS/JS ┬╖ Rule-based Tamil NLP ┬╖ Local dev server
+
+B1. Folder Structure
+tamil-nlp-project/
+  backend/
+    app.py              ΓåÉ Flask server + all API routes
+    grammar_engine.py   ΓåÉ Tamil grammar construction
+    requirements.txt    ΓåÉ Python package list
+  frontend/
+    templates/index.html
+    static/css/style.css
+    static/js/main.js
+
+Setup commands:
+mkdir tamil-nlp-project && cd tamil-nlp-project
+mkdir backend frontend frontend/templates frontend/static frontend/static/css frontend/static/js
+cd backend && python -m venv venv
+venv\Scripts\activate          # Windows
+source venv/bin/activate        # Mac/Linux
+
+requirements.txt:
+flask==3.0.0
+flask-cors==4.0.0
+open-tamil==1.1
+gtts==2.5.1
+# run: pip install -r requirements.txt
+
+B2. Tamil Grammar ΓÇö Core Concepts
+Tamil uses Subject-Object-Verb (SOV) order. Verb endings encode tense AND person/gender simultaneously.
+
+
+B3. grammar_engine.py
+# backend/grammar_engine.py
+class TamilGrammarEngine:
+    def __init__(self):
+        self.present={'first':'α«òα«┐α«▒α»çα«⌐α»ì','male':'α«òα«┐α«▒α«╛α«⌐α»ì','female':'α«òα«┐α«▒α«╛α«│α»ì','neutral':'α«òα«┐α«▒α«ñα»ü','plural':'α«òα«┐α«▒α«╛α«░α»ìα«òα«│α»ì'}
+        self.past   ={'first':'α«⌐α»çα«⌐α»ì','male':'α«⌐α«╛α«⌐α»ì','female':'α«⌐α«╛α«│α»ì','neutral':'α«⌐α«ñα»ü','plural':'α«⌐α«╛α«░α»ìα«òα«│α»ì'}
+        self.future ={'first':'α«╡α»çα«⌐α»ì','male':'α«╡α«╛α«⌐α»ì','female':'α«╡α«╛α«│α»ì','neutral':'α«òα»üα««α»ì','plural':'α«╡α«╛α«░α»ìα«òα«│α»ì'}
+        self.subjects={'first':'α«¿α«╛α«⌐α»ì','male':'α«àα«╡α«⌐α»ì','female':'α«àα«╡α«│α»ì','neutral':'α«àα«ñα»ü','plural':'α«àα«╡α«░α»ìα«òα«│α»ì'}
+    def get_suffix(self,tense,gender):
+        return {'present':self.present,'past':self.past,'future':self.future}.get(tense,self.present).get(gender,'α«òα«┐α«▒α»çα«⌐α»ì')
+    def generate_statement(self,noun,verb,tense,gender):
+        return f"{self.subjects.get(gender,'α«¿α«╛α«⌐α»ì')} {noun} {verb}{self.get_suffix(tense,gender)}"
+    def generate_question(self,noun,verb,tense,gender):
+        return self.generate_statement(noun,verb,tense,gender)[:-1]+'α«å?'
+    def generate_dialogue(self,noun,verb,tense,gender):
+        return [{'speaker':'α«¿α«úα»ìα«¬α«⌐α»ì','line':self.generate_question(noun,verb,tense,gender)},
+                {'speaker':'α«¿α«╛α«⌐α»ì','line':self.generate_statement(noun,verb,tense,gender)}]
+
+B4. app.py ΓÇö Flask Server (Phase 1)
+# backend/app.py
+from flask import Flask,request,jsonify,render_template
+from flask_cors import CORS
+import sys,os; sys.path.insert(0,os.path.dirname(__file__))
+from grammar_engine import TamilGrammarEngine
+app=Flask(__name__,template_folder='../frontend/templates',static_folder='../frontend/static')
+CORS(app); engine=TamilGrammarEngine()
+@app.route('/')
+def index(): return render_template('index.html')
+@app.route('/generate',methods=['POST'])
+def generate():
+    d=request.get_json()
+    n,v,t,g,s=d['noun'],d['verb'],d.get('tense','present'),d.get('gender','first'),d.get('sentence_type','statement')
+    out=engine.generate_statement(n,v,t,g) if s=='statement' else \
+        engine.generate_question(n,v,t,g) if s=='question' else engine.generate_dialogue(n,v,t,g)
+    return jsonify({'type':s,'output':out})
+if __name__=='__main__': app.run(debug=True,port=5000)
+
+B5. index.html, style.css, main.js
+index.html (frontend/templates/index.html):
+
+<!DOCTYPE html><html lang="ta"><head><meta charset="UTF-8">
+<title>Tamil Sentence Generator</title><link rel="stylesheet" href="/static/css/style.css"></head><body>
+<div class="container"><h1>α«ñα««α«┐α«┤α»ì α«╡α«╛α«òα»ìα«òα«┐α«» α«ëα«░α»üα«╡α«╛α«òα»ìα«òα«┐</h1>
+<div class="form-group"><label>α«¬α»åα«»α«░α»ìα«Üα»ìα«Üα»èα«▓α»ì (Noun)</label><input type="text" id="noun" placeholder="e.g. α«¬α«╛α«▓α»ì"></div>
+<div class="form-group"><label>α«╡α«┐α«⌐α»êα«Üα»ìα«Üα»èα«▓α»ì (Verb Root)</label><input type="text" id="verb" placeholder="e.g. α«òα»üα«ƒα«┐"></div>
+<div class="form-group"><label>α«òα«╛α«▓α««α»ì (Tense)</label><select id="tense">
+<option value="present">α«¿α«┐α«òα«┤α»ìα«òα«╛α«▓α««α»ì</option><option value="past">α«çα«▒α«¿α»ìα«ñα«òα«╛α«▓α««α»ì</option><option value="future">α«Äα«ñα«┐α«░α»ìα«òα«╛α«▓α««α»ì</option></select></div>
+<div class="form-group"><label>α«¬α«╛α«▓α»ì</label><select id="gender">
+<option value="first">α«¿α«╛α«⌐α»ì</option><option value="male">α«àα«╡α«⌐α»ì</option>
+<option value="female">α«àα«╡α«│α»ì</option><option value="plural">α«àα«╡α«░α»ìα«òα«│α»ì</option></select></div>
+<div class="form-group"><label>α«╡α«╛α«òα»ìα«òα«┐α«» α«╡α«òα»ê</label><select id="sentence_type">
+<option value="statement">α«òα»éα«▒α»ìα«▒α»ü</option><option value="question">α«╡α«┐α«⌐α«╛</option><option value="dialogue">α«ëα«░α»êα«»α«╛α«ƒα«▓α»ì</option></select></div>
+<button onclick="generateSentence()">α«ëα«░α»üα«╡α«╛α«òα»ìα«òα»ü (Generate)</button>
+<div id="result" class="result-box"></div></div>
+<script src="/static/js/main.js"></script></body></html>
+
+style.css (frontend/static/css/style.css):
+
+body{font-family:Arial,sans-serif;background:#f0f4f8;margin:0;padding:20px;}
+.container{max-width:640px;margin:auto;background:#fff;padding:30px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);}
+h1{color:#1A3C5E;font-size:1.8em;} .form-group{margin-bottom:16px;}
+label{display:block;font-weight:bold;margin-bottom:6px;color:#2B7A9E;}
+input,select{width:100%;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:1em;box-sizing:border-box;}
+button{background:#1A6B9A;color:#fff;padding:12px 28px;border:none;border-radius:8px;font-size:1.1em;cursor:pointer;}
+button:hover{background:#155882;}
+.result-box{margin-top:24px;padding:20px;background:#EBF4FA;border-radius:8px;font-size:1.3em;color:#1A3C5E;min-height:60px;}
+nav a{color:#fff;text-decoration:none;margin-right:16px;}
+
+main.js (frontend/static/js/main.js):
+
+let last=null;
+async function generateSentence(){
+  const noun=document.getElementById('noun').value.trim();
+  const verb=document.getElementById('verb').value.trim();
+  const tense=document.getElementById('tense').value;
+  const gender=document.getElementById('gender').value;
+  const sentence_type=document.getElementById('sentence_type').value;
+  if(!noun||!verb){document.getElementById('result').textContent='Enter noun & verb.';return;}
+  const data=await(await fetch('/generate',{method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({noun,verb,tense,gender,sentence_type})})).json();
+  last={data,tense,sentence_type};
+  if(data.type==='dialogue'){let h='<strong>α«ëα«░α»êα«»α«╛α«ƒα«▓α»ì:</strong><br>';
+    data.output.forEach(d=>{h+=`<b>${d.speaker}:</b> ${d.line}<br>`;});
+    document.getElementById('result').innerHTML=h;
+  }else{document.getElementById('result').textContent=data.output;}
+}
+
+Γ£ö TIP: Phase 1 complete! Run: cd backend && python app.py  then open http://localhost:5000
+
+
+PHASE 2  Database Integration
+SQLite ┬╖ Vocabulary browser ┬╖ Save sentences ┬╖ Word search
+
+C1. New Files
+
+C2. Database Schema
+
+C3. init_db.py ΓÇö Full Code
+# backend/init_db.py  ΓÇö python init_db.py (run ONCE)
+import sqlite3,os
+DB=os.path.join(os.path.dirname(__file__),'tamil_nlp.db')
+def run():
+    if os.path.exists(DB): print('DB exists.'); return
+    c=sqlite3.connect(DB).cursor()
+    c.execute('''CREATE TABLE vocabulary(id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tamil_word TEXT,english_meaning TEXT,category TEXT,gender_class TEXT)''')
+    c.execute('''CREATE TABLE grammar_rules(id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tense TEXT,gender TEXT,suffix TEXT,subject TEXT)''')
+    c.execute('''CREATE TABLE saved_sentences(id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sentence TEXT,sentence_type TEXT,tense TEXT,saved_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+    words=[('α«¬α«╛α«▓α»ì','milk','noun','neutral'),('α«Üα»ïα«▒α»ü','rice','noun','neutral'),
+           ('α«ñα«úα»ìα«úα»Çα«░α»ì','water','noun','neutral'),('α«¬α»üα«ñα»ìα«ñα«òα««α»ì','book','noun','neutral'),
+           ('α«òα»üα«ƒα«┐','drink','verb','neutral'),('α«Üα«╛α«¬α»ìα«¬α«┐α«ƒα»ü','eat','verb','neutral'),
+           ('α«¬α«ƒα«┐','study','verb','neutral'),('α«¬α»çα«Üα»ü','speak','verb','neutral')]
+    c.executemany('INSERT INTO vocabulary VALUES(NULL,?,?,?,?)',words)
+    rules=[('present','first','α«òα«┐α«▒α»çα«⌐α»ì','α«¿α«╛α«⌐α»ì'),('present','male','α«òα«┐α«▒α«╛α«⌐α»ì','α«àα«╡α«⌐α»ì'),
+           ('present','female','α«òα«┐α«▒α«╛α«│α»ì','α«àα«╡α«│α»ì'),('past','first','α«⌐α»çα«⌐α»ì','α«¿α«╛α«⌐α»ì'),
+           ('past','male','α«⌐α«╛α«⌐α»ì','α«àα«╡α«⌐α»ì'),('future','first','α«╡α»çα«⌐α»ì','α«¿α«╛α«⌐α»ì'),
+           ('future','male','α«╡α«╛α«⌐α»ì','α«àα«╡α«⌐α»ì'),('future','female','α«╡α«╛α«│α»ì','α«àα«╡α«│α»ì')]
+    c.executemany('INSERT INTO grammar_rules VALUES(NULL,?,?,?,?)',rules)
+    c.connection.commit(); print('DB created: tamil_nlp.db')
+if __name__=='__main__': run()
+
+C4. db_manager.py
+# backend/db_manager.py
+import sqlite3,os
+DB=os.path.join(os.path.dirname(__file__),'tamil_nlp.db')
+def conn():
+    c=sqlite3.connect(DB); c.row_factory=sqlite3.Row; return c
+def get_all_vocabulary():
+    db=conn(); r=db.execute('SELECT * FROM vocabulary ORDER BY category').fetchall()
+    db.close(); return [dict(x) for x in r]
+def search_vocabulary(q):
+    db=conn(); r=db.execute('SELECT * FROM vocabulary WHERE tamil_word LIKE ? OR english_meaning LIKE ?',
+        (f'%{q}%',f'%{q}%')).fetchall(); db.close(); return [dict(x) for x in r]
+def get_suffix(tense,gender):
+    db=conn(); r=db.execute('SELECT suffix FROM grammar_rules WHERE tense=? AND gender=?',(tense,gender)).fetchone()
+    db.close(); return r['suffix'] if r else 'α«òα«┐α«▒α»çα«⌐α»ì'
+def get_subject(gender):
+    db=conn(); r=db.execute('SELECT subject FROM grammar_rules WHERE gender=? LIMIT 1',(gender,)).fetchone()
+    db.close(); return r['subject'] if r else 'α«¿α«╛α«⌐α»ì'
+def save_sentence(sentence,stype,tense):
+    db=conn(); db.execute('INSERT INTO saved_sentences(sentence,sentence_type,tense) VALUES(?,?,?)',(sentence,stype,tense))
+    db.commit(); db.close()
+def get_saved():
+    db=conn(); r=db.execute('SELECT * FROM saved_sentences ORDER BY saved_at DESC').fetchall()
+    db.close(); return [dict(x) for x in r]
+def delete_saved(sid):
+    db=conn(); db.execute('DELETE FROM saved_sentences WHERE id=?',(sid,)); db.commit(); db.close()
+
+Γ£ö TIP: Phase 2: Run python init_db.py once, then python app.py. Visit /vocabulary and /saved.
+
+
+PHASE 3  Voice Features
+gTTS Text-to-Speech ┬╖ Web Speech API ┬╖ Pronunciation practice
+
+D1. Add /speak Route to app.py
+from gtts import gTTS
+import os
+AUDIO=os.path.join(os.path.dirname(__file__),'..','frontend','static','audio')
+os.makedirs(AUDIO,exist_ok=True)
+@app.route('/speak',methods=['POST'])
+def speak():
+    text=request.get_json().get('text','')
+    if not text: return jsonify({'error':'no text'}),400
+    tts=gTTS(text=text,lang='ta')   # 'ta' = Tamil
+    out=os.path.join(AUDIO,'output.mp3')
+    tts.save(out)
+    return jsonify({'audio_url':'/static/audio/output.mp3'})
+
+D2. Add to index.html (buttons)
+<button onclick="saveSentence()" id="saveBtn" style="display:none;background:#27AE60;margin-left:8px;">α«Üα»çα««α«┐</button>
+<button onclick="speakSentence()" id="speakBtn" style="display:none;background:#8E44AD;margin-left:8px;">≡ƒöè α«òα»çα«│α»ì</button>
+<button onclick="startVoice()" style="background:#E67E22;margin-left:8px;">≡ƒÄñ α«¬α»çα«Üα»ü</button>
+<div id="audioPlayer" style="display:none;margin-top:12px;"><audio id="audio" controls></audio></div>
+
+D3. Add to main.js (voice functions)
+async function speakSentence(){
+  if(!last)return;
+  const text=last.data.type==='dialogue'?last.data.output.map(d=>d.line).join(' '):last.data.output;
+  const r=await(await fetch('/speak',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({text})})).json();
+  if(r.audio_url){const a=document.getElementById('audio');
+    a.src=r.audio_url+'?t='+Date.now();
+    document.getElementById('audioPlayer').style.display='block'; a.play();}
+}
+function startVoice(){
+  if(!('webkitSpeechRecognition' in window)){alert('Use Chrome/Edge for voice.');return;}
+  const r=new webkitSpeechRecognition();
+  r.lang='ta-IN'; r.interimResults=false;
+  r.onresult=e=>{ document.getElementById('noun').value=e.results[0][0].transcript; };
+  r.onerror=e=>alert('Voice error: '+e.error);
+  r.start();
+}
+
+Γ£ö TIP: Phase 3 complete! Users now hear Tamil sentences spoken and can speak inputs via microphone (Chrome).
+
+
+PHASE 4  AI Enhancement & Tamil Chatbot
+Claude API ┬╖ Smart variations ┬╖ Conversational tutor ┬╖ AI grammar help
+
+E1. Setup API Key
+Create backend/.env:
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+
+Add to requirements.txt:
+python-dotenv==1.0.0
+anthropic==0.25.0
+
+Install: pip install python-dotenv anthropic
+ΓÜá WARNING: Never commit .env to GitHub. Add it to .gitignore.
+
+E2. Add AI Routes to app.py
+import anthropic as ant
+from dotenv import load_dotenv
+load_dotenv()
+ai=ant.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
+
+@app.route('/variations',methods=['POST'])
+def variations():
+    sent=request.get_json().get('sentence','')
+    prompt=f'You are a Tamil language teacher. Sentence: {sent}. Give 3 alternative Tamil ways to say the same thing. Number each. Tamil first, English in brackets.'
+    msg=ai.messages.create(model='claude-sonnet-4-20250514',max_tokens=400,
+        messages=[{'role':'user','content':prompt}])
+    return jsonify({'variations':msg.content[0].text})
+
+@app.route('/chat',methods=['POST'])
+def chat():
+    d=request.get_json()
+    msgs=d.get('history',[])+[{'role':'user','content':d.get('message','')}]
+    sys='You are Amma, a friendly Tamil tutor. Reply in simple English with Tamil examples. Max 3 sentences.'
+    r=ai.messages.create(model='claude-sonnet-4-20250514',max_tokens=300,system=sys,messages=msgs)
+    return jsonify({'reply':r.content[0].text})
+
+@app.route('/chatbot')
+def chatbot(): return render_template('chatbot.html')
+
+E3. chatbot.html
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Tamil Tutor</title>
+<link rel="stylesheet" href="/static/css/style.css"></head><body>
+<div class="container"><h1>Amma ΓÇö Tamil Tutor ≡ƒî║</h1>
+<div id="chat" style="height:320px;overflow-y:auto;border:1px solid #ccc;border-radius:8px;padding:16px;background:#fafafa;margin-bottom:12px;"></div>
+<div style="display:flex;gap:8px;">
+  <input id="msg" placeholder="Ask about Tamil grammar..." style="flex:1;padding:10px;">
+  <button onclick="send()">Send</button></div></div>
+<script>let H=[];
+async function send(){const m=document.getElementById('msg').value.trim();if(!m)return;
+  add('You',m,'#EBF4FA');document.getElementById('msg').value='';H.push({role:'user',content:m});
+  const r=await(await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message:m,history:H})})).json();
+  add('Amma ≡ƒî║',r.reply,'#E8F5E9');H.push({role:'assistant',content:r.reply});
+  if(H.length>20)H=H.slice(-20);}
+function add(s,t,bg){const d=document.getElementById('chat');
+  d.innerHTML+=`<div style='margin-bottom:10px;padding:8px;background:${bg};border-radius:6px;'><b>${s}:</b> ${t}</div>`;
+  d.scrollTop=d.scrollHeight;}
+document.getElementById('msg').addEventListener('keydown',e=>{if(e.key==='Enter')send();});
+add('Amma ≡ƒî║','α«╡α«úα«òα»ìα«òα««α»ì! Hello! I am Amma your Tamil tutor. Ask me anything!','#E8F5E9');
+</script></body></html>
+
+Γ£ö TIP: Phase 4 complete! AI-powered sentence variations and a live Tamil tutor chatbot.
+
+
+PHASE 5  Deployment & Mobile PWA
+Render.com ┬╖ GitHub ┬╖ gunicorn ┬╖ Progressive Web App
+
+F1. Prepare for Deployment
+Create Procfile in project root:
+web: cd backend && gunicorn app:app
+
+Add to requirements.txt:
+gunicorn==21.2.0
+
+Create .gitignore in project root:
+venv/ __pycache__/ *.pyc .env tamil_nlp.db frontend/static/audio/
+
+F2. Push to GitHub
+git init && git add . && git commit -m 'Tamil NLP complete'
+git remote add origin https://github.com/YOUR_USERNAME/tamil-nlp.git
+git push -u origin main
+
+F3. Deploy on Render.com
+
+F4. PWA ΓÇö Install on Mobile
+Create frontend/static/manifest.json:
+{"name":"Tamil Sentence Generator","short_name":"TamilNLP","start_url":"/",
+ "display":"standalone","theme_color":"#1A3C5E","background_color":"#ffffff",
+ "icons":[{"src":"/static/icon-192.png","sizes":"192x192","type":"image/png"},
+          {"src":"/static/icon-512.png","sizes":"512x512","type":"image/png"}]}
+
+Create frontend/static/sw.js:
+const C='tamil-nlp-v1',A=['/','/static/css/style.css','/static/js/main.js'];
+self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(A))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+
+Add to <head> of index.html:
+<link rel="manifest" href="/static/manifest.json"><meta name="theme-color" content="#1A3C5E">
+
+Add before </body>:
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('/static/sw.js');</script>
+
+Γ£ö TIP: Phase 5 complete! App is live on the internet and installable on Android and iPhone.
+
+
+PART G ΓÇö Extended Feature Modules
+Grammar Checker ┬╖ Dialogue Library ┬╖ Quiz Engine ┬╖ Gamification ┬╖ Analytics ┬╖ Teacher Dashboard
+
+Γÿà NEW FEATURE: These features build on top of the 5-phase foundation. Implement after Phase 5 or in parallel for hackathon demo.
+
+G1. Grammar Checker Module
+Detects grammar errors in free Tamil text entered by the user and suggests corrections.
+
+New route: /check_grammar
+@app.route('/check_grammar',methods=['POST'])
+def check_grammar():
+    text=request.get_json().get('text','')
+    prompt=f'''You are an expert Tamil grammar teacher.
+Analyse this Tamil text: {text}
+1. Identify any grammar errors (tense, verb agreement, case markers).
+2. Provide corrected version.
+3. Explain each correction in simple English.
+Format: ERROR | CORRECTION | EXPLANATION (one per line)'''
+    r=ai.messages.create(model='claude-sonnet-4-20250514',max_tokens=600,
+        messages=[{'role':'user','content':prompt}])
+    return jsonify({'result':r.content[0].text})
+
+Grammar Checker UI (add a new tab on homepage):
+<textarea id="grammarInput" placeholder="Type a Tamil sentence to check..." rows="3" style="width:100%;padding:10px;"></textarea>
+<button onclick="checkGrammar()">Check Grammar</button>
+<div id="grammarResult" class="result-box" style="display:none;"></div>
+async function checkGrammar(){
+  const text=document.getElementById('grammarInput').value;
+  const r=await(await fetch('/check_grammar',{method:'POST',
+    headers:{'Content-Type':'application/json'},body:JSON.stringify({text})})).json();
+  document.getElementById('grammarResult').style.display='block';
+  document.getElementById('grammarResult').innerHTML=r.result.replace(/\n/g,'<br>');
+}
+
+G2. Dialogue Library Module
+Pre-built Tamil dialogue scripts for real-life scenarios. Users can browse, practice, and listen.
+
+Add to init_db.py ΓÇö new table: dialogue_templates
+c.execute('''CREATE TABLE dialogue_templates(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    scenario TEXT NOT NULL,         -- 'school','office','interview','daily'
+    title TEXT NOT NULL,
+    speaker_a TEXT NOT NULL,        -- Tamil line speaker A
+    speaker_b TEXT NOT NULL,        -- Tamil line speaker B
+    english_a TEXT NOT NULL,        -- English translation A
+    english_b TEXT NOT NULL,        -- English translation B
+    difficulty TEXT DEFAULT 'beginner')''')
+
+dialogues=[
+  ('school','Asking for a pen','α«¬α»çα«⌐α«╛ α«òα»èα«ƒα»üα«òα»ìα«ò α««α»üα«ƒα«┐α«»α»üα««α«╛?','α«çα«ñα»ï, α«╡α«╛α«Öα»ìα«òα«┐α«òα»ìα«òα»ï.','Can you give me a pen?','Here, take it.','beginner'),
+  ('office','Good morning greeting','α«òα«╛α«▓α»ê α«╡α«úα«òα»ìα«òα««α»ì α«Üα«╛α«░α»ì.','α«╡α«úα«òα»ìα«òα««α»ì, α«Äα«¬α»ìα«¬α«ƒα«┐ α«çα«░α»üα«òα»ìα«òα»Çα«Öα»ìα«ò?','Good morning sir.','Hello, how are you?','beginner'),
+  ('interview','Self introduction','α«Äα«⌐α»ì α«¬α»åα«»α«░α»ì α«£α»åα«»α«⌐α»ì. α«¿α«╛α«⌐α»ì α«òα«úα«┐α«⌐α«┐ α«¬α«ƒα«┐α«Üα»ìα«Üα»çα«⌐α»ì.','α«¿α«▓α»ìα«▓α«ñα»ü. α«àα«⌐α»üα«¬α«╡α««α»ì α«Åα«ñα«╛α«╡α«ñα»ü α«çα«░α»üα«òα»ìα«òα«╛?','My name is Jayan. I studied computer science.','Good. Do you have any experience?','intermediate'),
+  ('daily','Buying vegetables','α«╡α»åα«Öα»ìα«òα«╛α«»α««α»ì α«Äα«╡α»ìα«╡α«│α«╡α»ü?','α«òα«┐α«▓α»ï α«¬α«ñα»ìα«ñα»ü α«░α»éα«¬α«╛α«»α»ì.','How much is onion?','Ten rupees per kilo.','beginner'),
+]
+c.executemany('INSERT INTO dialogue_templates(scenario,title,speaker_a,speaker_b,english_a,english_b,difficulty) VALUES(?,?,?,?,?,?,?)',dialogues)
+
+Route: /api/dialogues
+@app.route('/api/dialogues')
+def api_dialogues():
+    sc=request.args.get('scenario','')
+    db=conn()
+    q='SELECT * FROM dialogue_templates WHERE scenario=?' if sc else 'SELECT * FROM dialogue_templates'
+    r=db.execute(q,(sc,) if sc else ()).fetchall()
+    db.close(); return jsonify([dict(x) for x in r])
+
+G3. Vocabulary Builder Module
+Enhanced vocabulary system with synonyms, antonyms, daily word, and flashcard-style learning.
+
+Expanded vocabulary table (update init_db.py):
+c.execute('''ALTER TABLE vocabulary ADD COLUMN synonyms TEXT DEFAULT ''')
+c.execute('''ALTER TABLE vocabulary ADD COLUMN antonyms TEXT DEFAULT ''')
+c.execute('''ALTER TABLE vocabulary ADD COLUMN example_sentence TEXT DEFAULT ''')
+c.execute('''ALTER TABLE vocabulary ADD COLUMN difficulty TEXT DEFAULT 'beginner'''')
+
+Daily Word Route:
+import random
+@app.route('/api/daily_word')
+def daily_word():
+    db=conn()
+    words=db.execute('SELECT * FROM vocabulary ORDER BY RANDOM() LIMIT 1').fetchone()
+    db.close(); return jsonify(dict(words) if words else {})
+
+Frontend ΓÇö Daily Word Widget:
+async function loadDailyWord(){
+  const w=await(await fetch('/api/daily_word')).json();
+  document.getElementById('dailyWord').innerHTML=
+    `<b style='font-size:1.5em;'>${w.tamil_word}</b> ΓÇö ${w.english_meaning}<br>
+    <small>Category: ${w.category}</small>`;
+}
+
+G4. Quiz Engine Module
+Generates grammar and vocabulary quizzes automatically from the database and AI.
+
+New table: quiz_results
+c.execute('''CREATE TABLE quiz_results(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER DEFAULT 1,
+    quiz_type TEXT,        -- 'vocab','grammar','sentence'
+    score INTEGER,
+    total INTEGER,
+    taken_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+
+AI Quiz Generation Route:
+@app.route('/generate_quiz',methods=['POST'])
+def generate_quiz():
+    qtype=request.get_json().get('type','vocab')
+    prompt=f'''Generate a Tamil {qtype} quiz with 5 multiple-choice questions.
+Each question: Tamil word or sentence, 4 options (A/B/C/D), correct answer marked.
+Return as JSON array: [{question,options:[],answer,explanation}]'''
+    r=ai.messages.create(model='claude-sonnet-4-20250514',max_tokens=800,
+        messages=[{'role':'user','content':prompt}])
+    import json
+    raw=r.content[0].text.replace('```json','').replace('```','').strip()
+    return jsonify({'quiz':json.loads(raw)})
+
+G5. Gamification Module
+Points, badges, leaderboard, daily challenges, and learning streaks to keep learners engaged.
+
+New tables: users, user_points, badges, user_badges
+c.execute('''CREATE TABLE users(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE, email TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+c.execute('''CREATE TABLE user_points(
+    user_id INTEGER,total_points INTEGER DEFAULT 0,streak_days INTEGER DEFAULT 0,
+    last_active DATE,FOREIGN KEY(user_id) REFERENCES users(id))''')
+c.execute('''CREATE TABLE badges(id INTEGER PRIMARY KEY,name TEXT,description TEXT,icon TEXT,threshold INTEGER)''')
+c.execute('''CREATE TABLE user_badges(user_id INTEGER,badge_id INTEGER,earned_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+
+badges_data=[(1,'First Step','Generated first sentence','Γ¡É',1),
+  (2,'Sentence Master','Generated 50 sentences','≡ƒÅå',50),
+  (3,'Grammar Guru','Completed 10 quizzes','≡ƒÄô',10),
+  (4,'Daily Learner','7-day streak','≡ƒöÑ',7),
+  (5,'Vocabulary Hero','Saved 100 sentences','≡ƒôÜ',100)]
+c.executemany('INSERT INTO badges VALUES(?,?,?,?,?)',badges_data)
+
+Points API Routes:
+@app.route('/api/points',methods=['POST'])
+def add_points():
+    d=request.get_json()
+    uid,pts=d.get('user_id',1),d.get('points',0)
+    db=conn()
+    db.execute('UPDATE user_points SET total_points=total_points+?,last_active=DATE("now") WHERE user_id=?',(pts,uid))
+    db.commit(); db.close()
+    return jsonify({'status':'ok'})
+@app.route('/api/leaderboard')
+def leaderboard():
+    db=conn()
+    r=db.execute('SELECT u.username,up.total_points,up.streak_days FROM users u JOIN user_points up ON u.id=up.user_id ORDER BY up.total_points DESC LIMIT 10').fetchall()
+    db.close(); return jsonify([dict(x) for x in r])
+
+G6. Analytics & Reporting Module
+Tracks learning progress and generates personalised improvement reports.
+
+New table: learning_sessions
+c.execute('''CREATE TABLE learning_sessions(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER DEFAULT 1,
+    activity TEXT,          -- 'sentence','quiz','dialogue','chatbot'
+    tense TEXT, gender TEXT, score INTEGER,
+    session_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+
+Analytics Routes:
+@app.route('/api/analytics/<int:uid>')
+def analytics(uid):
+    db=conn()
+    total=db.execute('SELECT COUNT(*) as c FROM learning_sessions WHERE user_id=?',(uid,)).fetchone()['c']
+    by_activity=db.execute('SELECT activity,COUNT(*) as c FROM learning_sessions WHERE user_id=? GROUP BY activity',(uid,)).fetchall()
+    avg_score=db.execute('SELECT AVG(score) as s FROM quiz_results WHERE user_id=?',(uid,)).fetchone()['s']
+    db.close()
+    return jsonify({'total_sessions':total,'by_activity':[dict(x) for x in by_activity],'avg_quiz_score':round(avg_score or 0,1)})
+
+G7. Teacher Dashboard Module
+Allows teachers to monitor student progress, create assignments, and view class analytics.
+
+New tables: teacher_assignments, student_submissions
+c.execute('''CREATE TABLE teacher_assignments(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    teacher_id INTEGER, title TEXT, description TEXT,
+    due_date DATE, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+c.execute('''CREATE TABLE student_submissions(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    assignment_id INTEGER, student_id INTEGER,
+    submitted_text TEXT, ai_score INTEGER, ai_feedback TEXT,
+    submitted_at DATETIME DEFAULT CURRENT_TIMESTAMP)''')
+
+Auto-evaluate submission with AI:
+@app.route('/submit_assignment',methods=['POST'])
+def submit_assignment():
+    d=request.get_json()
+    asgn_id,student_id,text=d['assignment_id'],d['student_id'],d['text']
+    prompt=f'Evaluate this Tamil sentence for grammar correctness (score 0ΓÇô10) and give brief feedback: {text}. Return JSON: {{score:int,feedback:str}}'
+    r=ai.messages.create(model='claude-sonnet-4-20250514',max_tokens=200,messages=[{'role':'user','content':prompt}])
+    import json
+    ev=json.loads(r.content[0].text.replace('```json','').replace('```','').strip())
+    db=conn()
+    db.execute('INSERT INTO student_submissions(assignment_id,student_id,submitted_text,ai_score,ai_feedback) VALUES(?,?,?,?,?)',
+        (asgn_id,student_id,text,ev['score'],ev['feedback']))
+    db.commit(); db.close()
+    return jsonify(ev)
+
+
+PART H ΓÇö Complete Database Schema
+All tables ┬╖ Column definitions ┬╖ Relationships
+
+H1. All Tables Summary
+
+H2. Entity Relationship Diagram (Text)
+users ΓöÇΓöÇ< user_points          (1 user : 1 points row)
+users ΓöÇΓöÇ< user_badges >ΓöÇΓöÇ badges (many-to-many via user_badges)
+users ΓöÇΓöÇ< quiz_results          (1 user : many quiz attempts)
+users ΓöÇΓöÇ< learning_sessions     (1 user : many sessions)
+users ΓöÇΓöÇ< student_submissions   (1 user : many submissions)
+teacher_assignments ΓöÇΓöÇ< student_submissions
+dialogue_templates  (standalone, browseable by scenario)
+vocabulary          (standalone, searchable)
+grammar_rules       (standalone, used by grammar_engine)
+saved_sentences     (linked to user_id in full version)
+
+
+PART I ΓÇö System Architecture & Workflow Diagrams
+Text-based flow charts for all major processes
+
+I1. Main Sentence Generation Workflow
+User opens browser ΓåÆ http://localhost:5000
+    Γöé
+    Γû╝
+User enters: Noun + Verb + Tense + Gender + Sentence Type
+    Γöé
+    Γû╝
+JavaScript validates input (not empty)
+    Γöé  POST /generate {noun,verb,tense,gender,sentence_type}
+    Γû╝
+Flask app.py receives request
+    Γöé
+    Γû╝
+grammar_engine.py
+    Γö£ΓöÇΓöÇ db_manager.get_subject(gender)  ΓåÆ 'α«¿α«╛α«⌐α»ì'
+    Γö£ΓöÇΓöÇ db_manager.get_suffix(tense,gender) ΓåÆ 'α«òα«┐α«▒α»çα«⌐α»ì'
+    ΓööΓöÇΓöÇ builds sentence: subject + noun + verb + suffix
+    Γöé
+    Γû╝
+Returns JSON: {type:'statement', output:'α«¿α«╛α«⌐α»ì α«¬α«╛α«▓α»ì α«òα»üα«ƒα«┐α«òα»ìα«òα«┐α«▒α»çα«⌐α»ì'}
+    Γöé
+    Γû╝
+JavaScript displays result in result-box
+    Γöé
+    Γö£ΓöÇΓöÇ Save button ΓåÆ POST /save ΓåÆ database
+    Γö£ΓöÇΓöÇ Speak button ΓåÆ POST /speak ΓåÆ gTTS ΓåÆ MP3 ΓåÆ audio player
+    ΓööΓöÇΓöÇ Variations button ΓåÆ POST /variations ΓåÆ Claude API ΓåÆ alternatives
+
+I2. User Learning Journey Flow
+New User ΓåÆ Register/Login ΓåÆ Landing Page
+    Γöé
+    Γö£ΓöÇΓöÇ[Sentence Practice]ΓöÇΓöÇ Generate ΓåÆ Save ΓåÆ Listen ΓåÆ Get Variations
+    Γöé
+    Γö£ΓöÇΓöÇ[Dialogue Practice]ΓöÇΓöÇ Choose Scenario ΓåÆ View Dialogue ΓåÆ Listen ΓåÆ Practice
+    Γöé
+    Γö£ΓöÇΓöÇ[Vocabulary]ΓöÇΓöÇ Browse ΓåÆ Search ΓåÆ Flashcard ΓåÆ Daily Word
+    Γöé
+    Γö£ΓöÇΓöÇ[Quiz]ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ Choose Type ΓåÆ AI Generates Quiz ΓåÆ Answer ΓåÆ Score Saved
+    Γöé
+    Γö£ΓöÇΓöÇ[Grammar Check]ΓöÇ Enter Free Text ΓåÆ AI Analysis ΓåÆ Corrections
+    Γöé
+    Γö£ΓöÇΓöÇ[Chat Tutor]ΓöÇΓöÇΓöÇ Chat with Amma ΓåÆ Ask Questions ΓåÆ Get Tamil Examples
+    Γöé
+    ΓööΓöÇΓöÇ[Dashboard]ΓöÇΓöÇΓöÇΓöÇ View Progress ΓåÆ Points ΓåÆ Badges ΓåÆ Streak
+
+I3. AI Processing Flow
+User Request (sentence/quiz/chat/grammar check)
+    Γöé
+    Γû╝
+Flask Backend receives POST request
+    Γöé
+    Γû╝
+Prompt Engineering Layer
+    Γö£ΓöÇΓöÇ Build context-specific system prompt
+    Γö£ΓöÇΓöÇ Add conversation history (for chat)
+    ΓööΓöÇΓöÇ Set max_tokens based on task
+    Γöé
+    Γû╝
+Claude API (claude-sonnet-4-20250514)
+    Γöé
+    Γû╝
+Response Parser
+    Γö£ΓöÇΓöÇ Text responses ΓåÆ return as-is
+    ΓööΓöÇΓöÇ JSON responses ΓåÆ parse, validate, return structured
+    Γöé
+    Γû╝
+Flask returns JSON to frontend
+
+
+PART J ΓÇö UI/UX Screen Descriptions
+All pages ┬╖ Layout ┬╖ Components ┬╖ Navigation
+
+J1. Navigation Structure
+Home (/) ΓåÆ Vocabulary (/vocabulary) ΓåÆ Saved (/saved) ΓåÆ Dialogues (/dialogues)
+Quiz (/quiz) ΓåÆ Grammar Check (/grammar) ΓåÆ Chat Tutor (/chatbot) ΓåÆ Dashboard (/dashboard)
+
+
+J2. Home Page Layout Description
+ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ
+Γöé  NAV: Home | Vocabulary | Saved | Dialogues | Quiz | ... Γöé
+Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+Γöé           α«ñα««α«┐α«┤α»ì α«╡α«╛α«òα»ìα«òα«┐α«» α«ëα«░α»üα«╡α«╛α«òα»ìα«òα«┐                       Γöé
+Γöé         Tamil Sentence & Dialogue Generator              Γöé
+Γö£ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöñ
+Γöé  FORM PANEL             Γöé  DAILY WORD WIDGET             Γöé
+Γöé  ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ   Γöé  ΓöîΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÉ  Γöé
+Γöé  Γöé Noun input      Γöé   Γöé  Γöé ≡ƒîƒ Word of the Day       Γöé  Γöé
+Γöé  Γöé Verb input      Γöé   Γöé  Γöé α«¬α«╛α«▓α»ì ΓÇö milk              Γöé  Γöé
+Γöé  Γöé Tense dropdown  Γöé   Γöé  Γöé Category: noun           Γöé  Γöé
+Γöé  Γöé Gender dropdown Γöé   Γöé  ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ  Γöé
+Γöé  Γöé Type dropdown   Γöé   Γöé                                Γöé
+Γöé  ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ   Γöé  POINTS BADGE                  Γöé
+Γöé  [Generate] [Save]      Γöé  Γ¡É 240 pts  ≡ƒöÑ 5 day streak   Γöé
+Γöé  [≡ƒöè Listen] [Variations]Γöé                               Γöé
+Γöé                         Γöé                               Γöé
+Γöé  RESULT BOX             Γöé                               Γöé
+Γöé  α«¿α«╛α«⌐α»ì α«¬α«╛α«▓α»ì α«òα»üα«ƒα«┐α«òα»ìα«òα«┐α«▒α»çα«⌐α»ì Γöé                               Γöé
+ΓööΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÿ
+
+
+PART K ΓÇö Hackathon Presentation Guide
+Problem ┬╖ Solution ┬╖ Demo flow ┬╖ Judging criteria ┬╖ Slide content
+
+K1. Recommended Presentation Structure (5ΓÇô7 minutes)
+
+K2. Key Differentiators vs Competitors
+
+K3. Demo Script (for judges)
+Open http://your-app.onrender.com
+Type Noun: α«¬α«╛α«▓α»ì (milk), Verb: α«òα»üα«ƒα«┐ (drink), Tense: Present, Gender: First
+Click Generate ΓåÆ show 'α«¿α«╛α«⌐α»ì α«¬α«╛α«▓α»ì α«òα»üα«ƒα«┐α«òα»ìα«òα«┐α«▒α»çα«⌐α»ì'
+Click Listen ΓåÆ Tamil audio plays
+Click Variations ΓåÆ AI shows 3 alternative expressions
+Navigate to /chatbot ΓåÆ ask 'How do I use past tense in Tamil?'
+Navigate to /grammar ΓåÆ type an intentionally wrong sentence ΓåÆ show AI correction
+Navigate to /dashboard ΓåÆ show points, streak, badges
+
+K4. Judging Criteria Checklist
+
+
+PART L ΓÇö Future Scope & Long-Term Roadmap
+6-month plan ┬╖ Advanced features ┬╖ Scale strategy
+
+L1. 6-Month Development Roadmap
+
+L2. Advanced AI Features (Post-Hackathon)
+Fine-tuned Tamil language model trained on Tamil literature corpus
+Emotion-based dialogue generation (happy, formal, casual, urgent tones)
+Pronunciation scoring using Google Speech-to-Text phoneme comparison
+Context-aware sentence generation based on user's weak grammar areas
+Multilingual translation: Tamil Γåö English Γåö Hindi Γåö Malayalam
+AI-generated Tamil short stories for reading comprehension practice
+
+L3. Scale & Deployment Strategy
+
+L4. Social Impact Goals
+Reach 10,000 Tamil learners in Tamil Nadu schools within 12 months
+Partner with Tamil Nadu state education board for curriculum integration
+Support diaspora Tamil speakers in Singapore, Malaysia, Sri Lanka, and Europe
+Contribute open-Tamil vocabulary database back to open-source community
+Tamil preservation: digitise and teach classical Tamil grammar patterns
+
+Γä╣ NOTE: α«ñα««α«┐α«┤α»ì α«Æα«░α»ü α«Üα»åα««α»ìα««α»èα«┤α«┐ ΓÇö Tamil is a classical language. Technology must preserve it.
+
+Tamil Dialogue Generator & Sentence Builder ΓÇö Complete Hackathon-Ready Guide  |  All Phases + Extensions

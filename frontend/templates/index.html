@@ -43,8 +43,12 @@
         <nav class="app-nav">
           <a href="/" class="nav-link active">Home</a>
           <a href="/vocabulary" class="nav-link">Vocabulary</a>
+          <a href="/dialogues" class="nav-link">Dialogues</a>
+          <a href="/quiz" class="nav-link">Quiz</a>
+          <a href="/grammar" class="nav-link">Grammar</a>
           <a href="/saved" class="nav-link">Saved</a>
           <a href="/chatbot" class="nav-link">AI Tutor</a>
+          <a href="/dashboard" class="nav-link">Dashboard</a>
         </nav>
         <button id="theme-toggle" class="icon-btn" title="Toggle Theme" aria-label="Toggle Theme">
           <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
@@ -229,6 +233,17 @@
         <div id="variations-box" class="variations-box">
           <h3>இணை வாக்கியங்கள் (AI Sentence Variations)</h3>
           <div id="variations-content" class="variations-list"></div>
+        </div>
+
+        <!-- Daily Word Widget -->
+        <div class="daily-word-widget" id="daily-word-widget">
+          <div class="daily-word-header">
+            <span class="daily-word-star">🌟</span>
+            <span>இன்றைய சொல் (Word of the Day)</span>
+          </div>
+          <div id="daily-word-content" class="daily-word-content">
+            <div class="loader-dots"><span></span><span></span><span></span></div>
+          </div>
         </div>
 
         <!-- Hidden audio element for TTS playback -->

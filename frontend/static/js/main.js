@@ -8,6 +8,21 @@ let isAudioPlaying = false;
 document.addEventListener("DOMContentLoaded", () => {
   setupTheme();
   setupEventListeners();
+  // Load daily word widget if on homepage
+  if (document.getElementById("daily-word-content")) {
+    loadDailyWord();
+  }
+  // Award points for generating sentences
+  const genForm = document.getElementById("generator-form");
+  if (genForm) {
+    genForm.addEventListener("submit", () => {
+      fetch("/api/award_points", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ action: "generate" })
+      });
+    });
+  }
 });
 
 // Theme Toggle Logic
@@ -389,4 +404,37 @@ function startVoiceInput(fieldId) {
   };
   
   recognition.start();
+}
+
+// ─────────────────────────────────────────────────────────
+// Daily Word Widget (Homepage)
+// ─────────────────────────────────────────────────────────
+async function loadDailyWord() {
+  const container = document.getElementById("daily-word-content");
+  if (!container) return;
+  try {
+    const res  = await fetch("/api/daily_word");
+    const data = await res.json();
+    if (data.error || !data.tamil_word) {
+      container.innerHTML = "<p style='color:var(--text-secondary);font-size:0.85rem;'>Word unavailable.</p>";
+      return;
+    }
+    container.innerHTML = `
+      <div class="daily-word-main">
+        <span class="daily-word-tamil">${data.tamil_word}</span>
+        <span class="daily-word-meaning">${data.english_meaning}</span>
+      </div>
+      <div class="daily-word-meta">
+        <span class="vocab-category-badge ${data.category === 'noun' ? 'badge-noun' : 'badge-verb'}">${data.category}</span>
+        ${data.difficulty ? `<span class="difficulty-badge difficulty-${data.difficulty}">${data.difficulty}</span>` : ''}
+      </div>
+      ${data.example_sentence ? `<div class="daily-word-example">"${data.example_sentence}"</div>` : ''}
+      <button class="bubble-speak-btn daily-word-speak" onclick="speakText('${data.tamil_word.replace(/'/g, "\\'")}', this)" title="Hear pronunciation">
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+        கேள் (Listen)
+      </button>
+    `;
+  } catch (e) {
+    container.innerHTML = "<p style='color:var(--text-secondary);font-size:0.85rem;'>Could not load daily word.</p>";
+  }
 }
