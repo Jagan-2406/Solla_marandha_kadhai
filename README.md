@@ -43,7 +43,6 @@ cd Solla_marandha_kadhai/backend
 # 2. Create and activate virtual environment
 python -m venv venv
 venv\Scripts\activate        # Windows
-source venv/bin/activate     # Mac / Linux
 
 # 3. Install dependencies
 pip install -r requirements.txt
@@ -63,7 +62,7 @@ Open browser → **http://localhost:5000**
 
 ## 🛠️ Tech Stack
 
-`Python` `Flask` `open-tamil` `SQLite` `Claude API` `gTTS` `Web Speech API` `HTML/CSS/JS`
+`Python` `Flask` `open-tamil` `SQLite` `gTTS` `Web Speech API` `HTML/CSS/JS`
 
 ---
 
