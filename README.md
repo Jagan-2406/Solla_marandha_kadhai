@@ -37,8 +37,8 @@ An AI-powered web application that helps students learn Tamil grammar interactiv
 
 ```bash
 # 1. Unzip the project
-unzip tamil-nlp-project.zip
-cd tamil-nlp-project/backend
+unzip Solla_marandha_kadhai.zip
+cd Solla_marandha_kadhai/backend
 
 # 2. Create and activate virtual environment
 python -m venv venv
