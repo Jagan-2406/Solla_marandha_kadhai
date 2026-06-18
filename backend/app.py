@@ -8,9 +8,9 @@ import json
 # pyrefly: ignore [missing-import]
 from gtts import gTTS
 from dotenv import load_dotenv
-import anthropic as ant
 
-# Ensure backend directory is in python search path
+# Load environment secrets
+load_dotenv()
 sys.path.insert(0, os.path.dirname(__file__))
 from grammar_engine import TamilGrammarEngine
 from db_manager import (
@@ -21,29 +21,6 @@ from db_manager import (
     get_dashboard_stats, award_action_points
 )
 
-# Load environment secrets
-load_dotenv()
-api_key = os.environ.get('ANTHROPIC_API_KEY')
-gemini_key = os.environ.get('GEMINI_API_KEY') or api_key
-
-ai_client = None
-gemini_client = None
-gemini_enabled = False
-
-# Use the new google-genai SDK
-try:
-    from google import genai
-    if gemini_key and gemini_key.startswith('AIzaSy'):
-        gemini_client = genai.Client(api_key=gemini_key)
-        gemini_enabled = True
-        print("Gemini AI enabled successfully (google-genai SDK).")
-except ImportError:
-    print("google-genai not installed. Run: pip install google-genai")
-except Exception as e:
-    print(f"Error configuring Gemini: {e}")
-
-if not gemini_enabled and api_key and not api_key.startswith('sk-ant-your-key') and api_key.startswith('sk-ant-'):
-    ai_client = ant.Anthropic(api_key=api_key)
 
 app = Flask(
     __name__,
@@ -55,36 +32,12 @@ engine = TamilGrammarEngine()
 
 
 # ─────────────────────────────────────────────────────────
-# Helper: call AI (Gemini first, then Anthropic, then fallback)
+# Helper: call AI (disabled — returns fallback text)
 # ─────────────────────────────────────────────────────────
 
 def call_ai(prompt, system=None, max_tokens=600, fallback_text=None):
-    """Generic AI call returning a string response."""
-    try:
-        if gemini_client:
-            from google.genai import types
-            cfg = types.GenerateContentConfig(max_output_tokens=max_tokens)
-            if system:
-                cfg = types.GenerateContentConfig(
-                    system_instruction=system,
-                    max_output_tokens=max_tokens
-                )
-            response = gemini_client.models.generate_content(
-                model='gemini-2.0-flash',
-                contents=prompt,
-                config=cfg
-            )
-            return response.text
-        elif ai_client:
-            kwargs = {'model': 'claude-3-5-sonnet-latest', 'max_tokens': max_tokens,
-                      'messages': [{'role': 'user', 'content': prompt}]}
-            if system:
-                kwargs['system'] = system
-            msg = ai_client.messages.create(**kwargs)
-            return msg.content[0].text
-    except Exception as e:
-        print(f"AI call error: {e}")
-    return fallback_text or "AI is not available right now. Please add a GEMINI_API_KEY in backend/.env"
+    """AI is disabled. Always returns the provided fallback text."""
+    return fallback_text or "AI features are currently disabled."
 
 
 # ─────────────────────────────────────────────────────────
@@ -200,102 +153,6 @@ def api_vocab():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# ─────────────────────────────────────────────────────────
-# Phase 4: AI Chatbot & Variations
-# ─────────────────────────────────────────────────────────
-
-@app.route('/chatbot')
-def chatbot():
-    return render_template('chatbot.html')
-
-
-@app.route('/variations', methods=['POST'])
-def variations():
-    try:
-        data = request.get_json() or {}
-        sent = data.get('sentence', '').strip()
-        if not sent:
-            return jsonify({'error': 'Sentence is required'}), 400
-
-        prompt = f'''You are a Tamil language teacher.
-The student generated this Tamil sentence: {sent}
-Give 3 alternative ways to express the same meaning in Tamil.
-Format: number each line. Tamil sentence first, then English meaning in brackets.
-Keep it simple for beginners.'''
-
-        result = call_ai(prompt, max_tokens=400,
-                         fallback_text=(
-                             f"1. {sent} தான் (Emphatic statement)\n"
-                             f"2. {sent} என்று நினைக்கிறேன் (Conjectural format)\n"
-                             f"3. {sent} இல்லையா? (Tag question format)"
-                         ))
-        return jsonify({'variations': result})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-@app.route('/chat', methods=['POST'])
-def chat():
-    try:
-        data = request.get_json() or {}
-        user_msg = data.get('message', '').strip()
-        history  = data.get('history', [])
-        if not user_msg:
-            return jsonify({'error': 'Message is required'}), 400
-
-        system_prompt = '''You are a friendly Tamil language tutor named 'Amma'.
-You help beginners learn Tamil grammar and sentences.
-Reply in simple English with Tamil examples.
-Always include the Tamil script alongside transliteration.
-Keep answers short — 2 to 4 sentences max.'''
-
-        try:
-            if gemini_client:
-                from google.genai import types
-                chat_history = []
-                for h in history:
-                    role = 'user' if h.get('role') == 'user' else 'model'
-                    chat_history.append(types.Content(
-                        role=role,
-                        parts=[types.Part(text=h.get('content', ''))]
-                    ))
-                chat_session = gemini_client.chats.create(
-                    model='gemini-2.0-flash',
-                    history=chat_history,
-                    config=types.GenerateContentConfig(system_instruction=system_prompt)
-                )
-                response = chat_session.send_message(user_msg)
-                return jsonify({'reply': response.text})
-
-            elif ai_client:
-                formatted_history = [
-                    {'role': h.get('role', 'user'), 'content': h.get('content', '')}
-                    for h in history
-                ]
-                messages = formatted_history + [{'role': 'user', 'content': user_msg}]
-                msg = ai_client.messages.create(
-                    model='claude-3-5-sonnet-latest', max_tokens=300,
-                    system=system_prompt, messages=messages
-                )
-                return jsonify({'reply': msg.content[0].text})
-        except Exception as ai_err:
-            print(f"AI chat error: {ai_err}")
-
-        # Fallback responses
-        lower_msg = user_msg.lower()
-        if 'hello' in lower_msg or 'வணக்கம்' in lower_msg:
-            reply = "வணக்கம்! Hello! I am Amma. Ask me about Tamil grammar!"
-        elif 'verb' in lower_msg:
-            reply = "In Tamil, verbs come at the end. Example: நான் (I) + பால் (milk) + குடிக்கிறேன் (drink)."
-        elif 'tense' in lower_msg or 'present' in lower_msg:
-            reply = "Present tense uses marker 'கிற'. Example: படிக்கிறேன் (pa-di-kki-ren) = I study."
-        else:
-            reply = "வணக்கம்! Please add a valid GEMINI_API_KEY in backend/.env to unlock full AI responses!"
-        return jsonify({'reply': reply})
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
 # ─────────────────────────────────────────────────────────
