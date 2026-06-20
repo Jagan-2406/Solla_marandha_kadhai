@@ -27,7 +27,8 @@ app = Flask(
     template_folder='../frontend/templates',
     static_folder='../frontend/static'
 )
-CORS(app)
+# Allow all origins so the app works on Render
+CORS(app, resources={r'/*': {'origins': '*'}})
 engine = TamilGrammarEngine()
 
 
@@ -366,4 +367,5 @@ def api_award_points():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)

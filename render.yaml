@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: solla-marandha-kadhai
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn backend.app:app
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.0

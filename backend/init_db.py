@@ -1,28 +1,48 @@
 # backend/init_db.py
-# Run ONCE to create all database tables and seed starter data.
-# Run again to RESET the database (existing db is deleted).
+# Run ONCE to create all PostgreSQL tables in Supabase and seed starter data.
+# Usage: set DATABASE_URL env var, then run: python backend/init_db.py
 
-import sqlite3
+import psycopg2
 import os
+from datetime import date
 
-DB_PATH = os.path.join(os.path.dirname(__file__), 'tamil_nlp.db')
+# Get DATABASE_URL from environment
+DATABASE_URL = os.environ.get('DATABASE_URL', '')
+if DATABASE_URL.startswith('postgres://'):
+    DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+
+if not DATABASE_URL:
+    raise ValueError(
+        "DATABASE_URL environment variable is not set.\n"
+        "Set it to your Supabase connection string:\n"
+        "  $env:DATABASE_URL='postgresql://user:password@host:5432/postgres'"
+    )
+
 
 def init_database():
-    # If DB already exists, delete and re-initialise
-    if os.path.exists(DB_PATH):
-        os.remove(DB_PATH)
-        print("Existing database deleted. Re-initializing...")
-
-    conn = sqlite3.connect(DB_PATH)
+    print("Connecting to Supabase PostgreSQL...")
+    conn = psycopg2.connect(DATABASE_URL)
     cursor = conn.cursor()
 
+    print("Dropping old tables (if any)...")
+    cursor.execute('''
+        DROP TABLE IF EXISTS user_badges CASCADE;
+        DROP TABLE IF EXISTS badges CASCADE;
+        DROP TABLE IF EXISTS user_points CASCADE;
+        DROP TABLE IF EXISTS quiz_results CASCADE;
+        DROP TABLE IF EXISTS dialogue_templates CASCADE;
+        DROP TABLE IF EXISTS saved_sentences CASCADE;
+        DROP TABLE IF EXISTS grammar_rules CASCADE;
+        DROP TABLE IF EXISTS vocabulary CASCADE;
+    ''')
+
     # ─────────────────────────────────────────────────────────
-    # Phase 2 Tables
+    # Create Tables
     # ─────────────────────────────────────────────────────────
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS vocabulary (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            id              SERIAL PRIMARY KEY,
             tamil_word      TEXT NOT NULL,
             english_meaning TEXT NOT NULL,
             category        TEXT NOT NULL,
@@ -36,7 +56,7 @@ def init_database():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS grammar_rules (
-            id      INTEGER PRIMARY KEY AUTOINCREMENT,
+            id      SERIAL PRIMARY KEY,
             tense   TEXT NOT NULL,
             gender  TEXT NOT NULL,
             suffix  TEXT NOT NULL,
@@ -46,22 +66,17 @@ def init_database():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS saved_sentences (
-            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            id            SERIAL PRIMARY KEY,
             sentence      TEXT NOT NULL,
             sentence_type TEXT NOT NULL,
             tense         TEXT NOT NULL,
-            saved_at      DATETIME DEFAULT CURRENT_TIMESTAMP
+            saved_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
 
-    # ─────────────────────────────────────────────────────────
-    # Part G — New Feature Tables
-    # ─────────────────────────────────────────────────────────
-
-    # G2: Dialogue Library
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS dialogue_templates (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            id          SERIAL PRIMARY KEY,
             scenario    TEXT NOT NULL,
             title       TEXT NOT NULL,
             speaker_a   TEXT NOT NULL,
@@ -72,21 +87,19 @@ def init_database():
         )
     ''')
 
-    # G4: Quiz Engine — results storage
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS quiz_results (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            id          SERIAL PRIMARY KEY,
             quiz_type   TEXT,
             score       INTEGER,
             total       INTEGER,
-            taken_at    DATETIME DEFAULT CURRENT_TIMESTAMP
+            taken_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
 
-    # G5: Gamification — points, streak, badges
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_points (
-            id           INTEGER PRIMARY KEY AUTOINCREMENT,
+            id           SERIAL PRIMARY KEY,
             total_points INTEGER DEFAULT 0,
             streak_days  INTEGER DEFAULT 0,
             last_active  DATE
@@ -95,7 +108,7 @@ def init_database():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS badges (
-            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            id          SERIAL PRIMARY KEY,
             name        TEXT NOT NULL,
             description TEXT NOT NULL,
             icon        TEXT NOT NULL,
@@ -105,10 +118,9 @@ def init_database():
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS user_badges (
-            id         INTEGER PRIMARY KEY AUTOINCREMENT,
-            badge_id   INTEGER NOT NULL,
-            earned_at  DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (badge_id) REFERENCES badges(id)
+            id         SERIAL PRIMARY KEY,
+            badge_id   INTEGER NOT NULL REFERENCES badges(id),
+            earned_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     ''')
 
@@ -116,7 +128,7 @@ def init_database():
     # Seed Data
     # ─────────────────────────────────────────────────────────
 
-    # Vocabulary (G3: now with synonyms, antonyms, example_sentence, difficulty)
+    print("Seeding vocabulary...")
     vocab_items = [
         # Nouns
         ('பால்',          'milk',     'noun', 'neutral', 'தாய்ப்பால்',     'தண்ணீர்',   'நான் தினமும் பால் குடிக்கிறேன்.',     'beginner'),
@@ -153,11 +165,11 @@ def init_database():
         '''INSERT INTO vocabulary
            (tamil_word, english_meaning, category, gender_class,
             synonyms, antonyms, example_sentence, difficulty)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''',
         vocab_items
     )
 
-    # Grammar rules
+    print("Seeding grammar rules...")
     rules = [
         ('present', 'first',   'கிறேன்',    'நான்'),
         ('present', 'male',    'கிறான்',    'அவன்'),
@@ -176,13 +188,12 @@ def init_database():
         ('future',  'plural',  'வார்கள்',   'அவர்கள்'),
     ]
     cursor.executemany(
-        'INSERT INTO grammar_rules (tense, gender, suffix, subject) VALUES (?, ?, ?, ?)',
+        'INSERT INTO grammar_rules (tense, gender, suffix, subject) VALUES (%s, %s, %s, %s)',
         rules
     )
 
-    # G2: Dialogue library — real-life Tamil conversations
+    print("Seeding dialogues...")
     dialogues = [
-        # School scenario
         ('school', 'Asking for a pen',
          'பேனா கொடுக்க முடியுமா?', 'இதோ, வாங்கிக்கோ.',
          'Can you give me a pen?', 'Here, take it.', 'beginner'),
@@ -192,7 +203,6 @@ def init_database():
         ('school', 'Making a new friend',
          'நான் அர்ஜுன். உன் பெயர் என்ன?', 'என் பெயர் பிரியா. நன்றாக இருக்கிறேன்.',
          'I am Arjun. What is your name?', 'My name is Priya. I am doing well.', 'beginner'),
-        # Daily life
         ('daily', 'Buying vegetables',
          'வெங்காயம் எவ்வளவு?', 'கிலோ பத்து ரூபாய்.',
          'How much is onion?', 'Ten rupees per kilo.', 'beginner'),
@@ -205,7 +215,6 @@ def init_database():
         ('daily', 'At the doctor',
          'டாக்டர், எனக்கு காய்ச்சல் இருக்கிறது.', 'கவலைப்படாதீர்கள். மருந்து சாப்பிடுங்கள்.',
          'Doctor, I have a fever.', 'Do not worry. Take the medicine.', 'intermediate'),
-        # Office
         ('office', 'Good morning greeting',
          'காலை வணக்கம் சார்.', 'வணக்கம், எப்படி இருக்கீங்க?',
          'Good morning sir.', 'Hello, how are you?', 'beginner'),
@@ -215,7 +224,6 @@ def init_database():
         ('office', 'Asking for leave',
          'சார், நாளைக்கு விடுமுறை கொடுக்க முடியுமா?', 'சரி, போய் வாருங்கள்.',
          'Sir, can I take leave tomorrow?', 'Okay, you may go.', 'intermediate'),
-        # Interview
         ('interview', 'Self introduction',
          'என் பெயர் ஜெயன். நான் கணினி படிச்சேன்.',
          'நல்லது. அனுபவம் ஏதாவது இருக்கா?',
@@ -226,7 +234,6 @@ def init_database():
          'அது நல்லது. பலவீனம் என்ன?',
          'My strength is hard work.',
          'That is good. What is your weakness?', 'intermediate'),
-        # Family
         ('family', 'Introducing family',
          'இவர் என் அம்மா. அவர் ஆசிரியர்.',
          'வணக்கம் அம்மா. உங்கள் மகன் மிகவும் திறமையானவர்.',
@@ -241,11 +248,11 @@ def init_database():
     cursor.executemany(
         '''INSERT INTO dialogue_templates
            (scenario, title, speaker_a, speaker_b, english_a, english_b, difficulty)
-           VALUES (?, ?, ?, ?, ?, ?, ?)''',
+           VALUES (%s, %s, %s, %s, %s, %s, %s)''',
         dialogues
     )
 
-    # G5: Badges definition
+    print("Seeding badges...")
     badges = [
         ('First Sentence', 'Generated your first Tamil sentence!', '🌟', 1),
         ('Word Saver', 'Saved 5 sentences to your collection.', '💾', 5),
@@ -257,22 +264,22 @@ def init_database():
         ('Dialogue Master', 'Practiced 10 dialogues.', '🗣️', 10),
     ]
     cursor.executemany(
-        'INSERT INTO badges (name, description, icon, threshold) VALUES (?, ?, ?, ?)',
+        'INSERT INTO badges (name, description, icon, threshold) VALUES (%s, %s, %s, %s)',
         badges
     )
 
-    # Initialise the user_points row (single-user app)
-    from datetime import date
+    print("Seeding initial user_points row...")
     cursor.execute(
-        'INSERT INTO user_points (total_points, streak_days, last_active) VALUES (0, 0, ?)',
+        'INSERT INTO user_points (total_points, streak_days, last_active) VALUES (0, 0, %s)',
         (str(date.today()),)
     )
 
     conn.commit()
     conn.close()
-    print("SQLite database successfully created and seeded: backend/tamil_nlp.db")
-    print("Tables created: vocabulary, grammar_rules, saved_sentences,")
-    print("                dialogue_templates, quiz_results, user_points, badges, user_badges")
+    print("\n✅ Supabase PostgreSQL database successfully created and seeded!")
+    print("Tables: vocabulary, grammar_rules, saved_sentences,")
+    print("        dialogue_templates, quiz_results, user_points, badges, user_badges")
+
 
 if __name__ == '__main__':
     init_database()
