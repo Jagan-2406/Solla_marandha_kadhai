@@ -3,7 +3,7 @@ services:
     name: solla-marandha-kadhai
     runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn backend.app:app
+    startCommand: gunicorn --chdir backend app:app
     envVars:
       - key: DATABASE_URL
         sync: false
