@@ -5,8 +5,11 @@
 import psycopg2
 import os
 from datetime import date
+from dotenv import load_dotenv
 
-# Get DATABASE_URL from environment
+# Load DATABASE_URL from backend/.env automatically
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '.env'))
+
 DATABASE_URL = os.environ.get('DATABASE_URL', '')
 if DATABASE_URL.startswith('postgres://'):
     DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
