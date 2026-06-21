@@ -219,8 +219,8 @@ class TamilGrammarEngine:
         
         if statement.endswith('து'):
             question = statement[:-2] + 'தா?'
-        elif statement.endswith('ும்'):
-            question = statement[:-2] + 'ுமா?'
+        elif statement.endswith('ம்'):
+            question = statement[:-2] + 'மா?'
         elif statement.endswith('்'):
             # e.g., குடித்தேன் -> குடித்தேனா?, குடித்தான் -> குடித்தானா?, குடித்தாள் -> குடித்தாளா?
             question = statement[:-1] + 'ா?'
@@ -249,14 +249,14 @@ class TamilGrammarEngine:
             # Conjugate for second person ('நீ'): ending is 'ாய்' -> 'கிறாய்' -> 'கிறாயா?'
             stems = self._get_verb_stems(verb)
             if tense == 'present':
-                verb_qstn = stems['present_stem'] + 'ாய்'
+                verb_qstn = stems['present_stem'] + 'ாயா?'
             elif tense == 'past':
-                verb_qstn = stems['past_stem'] + 'ாய்'
+                verb_qstn = stems['past_stem'] + 'ாயா?'
             else:
-                verb_qstn = stems['future_stem'] + 'ாய்'
+                verb_qstn = stems['future_stem'] + 'ாயா?'
             
             # Formulate the question
-            qstn = f"நீ {noun} {verb_qstn}ா?"
+            qstn = f"நீ {noun} {verb_qstn}"
             stmt = f"ஆம், {stmt}"
         else:
             stmt = f"ஆம், {stmt}"
