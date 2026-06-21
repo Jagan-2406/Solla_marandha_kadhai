@@ -65,18 +65,18 @@ def generate():
 
         if sent_type == 'statement':
             result = engine.generate_statement(noun, verb, tense, gender)
+            award_action_points('generate')
             return jsonify({'type': 'statement', 'output': result})
         elif sent_type == 'question':
             result = engine.generate_question(noun, verb, tense, gender)
+            award_action_points('generate')
             return jsonify({'type': 'question', 'output': result})
         elif sent_type == 'dialogue':
             result = engine.generate_dialogue(noun, verb, tense, gender)
+            award_action_points('generate')
             return jsonify({'type': 'dialogue', 'output': result})
         else:
             return jsonify({'error': 'Invalid sentence type.'}), 400
-
-        # Award points for generating
-        award_action_points('generate')
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
