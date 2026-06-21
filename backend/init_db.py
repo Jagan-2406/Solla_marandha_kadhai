@@ -276,7 +276,7 @@ def init_database():
 
     conn.commit()
     conn.close()
-    print("\n✅ Supabase PostgreSQL database successfully created and seeded!")
+    print("\nSUCCESS: Supabase PostgreSQL database successfully created and seeded!")
     print("Tables: vocabulary, grammar_rules, saved_sentences,")
     print("        dialogue_templates, quiz_results, user_points, badges, user_badges")
 
