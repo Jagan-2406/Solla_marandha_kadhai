@@ -23,8 +23,13 @@ from db_manager import (
 
 
 app = Flask(__name__)
-# Allow all origins so the app works on Render
-CORS(app, resources={r'/*': {'origins': '*'}})
+# Secure CORS to only allow the Vercel frontend and local development servers
+CORS(app, resources={r'/*': {'origins': [
+    'https://solla-marandha-kadhai.vercel.app',
+    'http://localhost:5500', 
+    'http://127.0.0.1:5500',
+    'http://localhost:3000'
+]}})
 engine = TamilGrammarEngine()
 
 
