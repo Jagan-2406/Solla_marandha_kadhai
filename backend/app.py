@@ -1,5 +1,5 @@
 # backend/app.py
-from flask import Flask, request, jsonify, render_template, send_file
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 import sys
 import os
@@ -22,11 +22,7 @@ from db_manager import (
 )
 
 
-app = Flask(
-    __name__,
-    template_folder='../frontend/templates',
-    static_folder='../frontend/static'
-)
+app = Flask(__name__)
 # Allow all origins so the app works on Render
 CORS(app, resources={r'/*': {'origins': '*'}})
 engine = TamilGrammarEngine()
@@ -44,11 +40,6 @@ def call_ai(prompt, system=None, max_tokens=600, fallback_text=None):
 # ─────────────────────────────────────────────────────────
 # Phase 1: Core Pages
 # ─────────────────────────────────────────────────────────
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -117,11 +108,6 @@ def save():
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/saved')
-def saved_page():
-    return render_template('saved.html')
-
-
 @app.route('/api/saved')
 def api_saved():
     try:
@@ -139,11 +125,6 @@ def del_saved(sid):
         return jsonify({'error': str(e)}), 500
 
 
-@app.route('/vocabulary')
-def vocab_page():
-    return render_template('vocabulary.html')
-
-
 @app.route('/api/vocabulary')
 def api_vocab():
     try:
@@ -159,11 +140,6 @@ def api_vocab():
 # ─────────────────────────────────────────────────────────
 # G1: Grammar Checker
 # ─────────────────────────────────────────────────────────
-
-@app.route('/grammar')
-def grammar_page():
-    return render_template('grammar.html')
-
 
 @app.route('/check_grammar', methods=['POST'])
 def check_grammar():
@@ -198,11 +174,6 @@ Format your response clearly with sections: ORIGINAL, CORRECTED, EXPLANATION.'''
 # G2: Dialogue Library
 # ─────────────────────────────────────────────────────────
 
-@app.route('/dialogues')
-def dialogues_page():
-    return render_template('dialogues.html')
-
-
 @app.route('/api/dialogues')
 def api_dialogues():
     try:
@@ -227,11 +198,6 @@ def daily_word():
 # ─────────────────────────────────────────────────────────
 # G4: Quiz Engine
 # ─────────────────────────────────────────────────────────
-
-@app.route('/quiz')
-def quiz_page():
-    return render_template('quiz.html')
-
 
 @app.route('/generate_quiz', methods=['POST'])
 def generate_quiz():
@@ -340,11 +306,6 @@ def submit_quiz():
 # ─────────────────────────────────────────────────────────
 # G5: Dashboard
 # ─────────────────────────────────────────────────────────
-
-@app.route('/dashboard')
-def dashboard_page():
-    return render_template('dashboard.html')
-
 
 @app.route('/api/dashboard')
 def api_dashboard():

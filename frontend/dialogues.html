@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#1b1c2d">
+  <script src="/static/js/config.js"></script>
 </head>
 <body class="dark-mode">
   <div class="background-decor">
@@ -187,7 +188,7 @@
       isAudioPlaying = true;
       btn.style.opacity = '0.5';
       try {
-        const res  = await fetch('/tts', {
+        const res  = await fetch(API_BASE_URL + '/tts', {
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ text })
         });
@@ -209,7 +210,7 @@
       speakLine(d.speaker_a, document.createElement('button'));
       setTimeout(() => speakLine(d.speaker_b, document.createElement('button')), 3000);
       // Award points
-      fetch('/api/award_points', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'dialogue_practice'})});
+      fetch(API_BASE_URL + '/api/award_points', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'dialogue_practice'})});
     }
 
     function setupTheme() {

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const genForm = document.getElementById("generator-form");
   if (genForm) {
     genForm.addEventListener("submit", () => {
-      fetch("/api/award_points", {
+      fetch(API_BASE_URL + "/api/award_points", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({ action: "generate" })
@@ -104,7 +104,7 @@ async function generateSentence() {
   statusBadge.style.borderColor = "rgba(251, 191, 36, 0.2)";
 
   try {
-    const response = await fetch("/generate", {
+    const response = await fetch(API_BASE_URL + "/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -238,7 +238,7 @@ async function speakText(text, buttonElement) {
   const originalHTML = buttonElement.innerHTML;
   
   try {
-    const response = await fetch("/tts", {
+    const response = await fetch(API_BASE_URL + "/tts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -297,7 +297,7 @@ async function saveSentence() {
       ? currentResultText.split(" ").join(" | ") 
       : currentResultText;
       
-    const response = await fetch("/save", {
+    const response = await fetch(API_BASE_URL + "/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -337,7 +337,7 @@ async function getVariations() {
   varBtn.innerHTML = "<span>✨ Loading...</span>";
   
   try {
-    const response = await fetch("/variations", {
+    const response = await fetch(API_BASE_URL + "/variations", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -413,7 +413,7 @@ async function loadDailyWord() {
   const container = document.getElementById("daily-word-content");
   if (!container) return;
   try {
-    const res  = await fetch("/api/daily_word");
+    const res  = await fetch(API_BASE_URL + "/api/daily_word");
     const data = await res.json();
     if (data.error || !data.tamil_word) {
       container.innerHTML = "<p style='color:var(--text-secondary);font-size:0.85rem;'>Word unavailable.</p>";

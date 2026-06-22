@@ -13,6 +13,7 @@
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="/static/css/style.css">
+  <script src="/static/js/config.js"></script>
 </head>
 <body class="dark-mode">
   <div class="background-decor">
@@ -116,7 +117,7 @@
       const tbody = document.getElementById("vocab-table-body");
       
       try {
-        const response = await fetch(`/api/vocabulary?search=${encodeURIComponent(query)}`);
+        const response = await fetch(API_BASE_URL + `/api/vocabulary?search=${encodeURIComponent(query)}`);
         if (!response.ok) throw new Error("Failed to fetch vocabulary");
         
         const data = await response.json();

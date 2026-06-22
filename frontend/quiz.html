@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#1b1c2d">
+  <script src="/static/js/config.js"></script>
 </head>
 <body class="dark-mode">
   <div class="background-decor">
@@ -153,7 +154,7 @@
       startBtn.querySelector('span').textContent = 'Generating quiz...';
 
       try {
-        const res  = await fetch('/generate_quiz', {
+        const res  = await fetch(API_BASE_URL + '/generate_quiz', {
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ type: selectedType })
         });
@@ -270,7 +271,7 @@
 
       // Submit to backend
       try {
-        await fetch('/api/submit_quiz', {
+        await fetch(API_BASE_URL + '/api/submit_quiz', {
           method: 'POST', headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({ quiz_type: selectedType, score, total })
         });

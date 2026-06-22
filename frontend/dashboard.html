@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#1b1c2d">
+  <script src="/static/js/config.js"></script>
 </head>
 <body class="dark-mode">
   <div class="background-decor">
@@ -129,7 +130,7 @@
 
     async function loadDashboard() {
       try {
-        const res  = await fetch('/api/dashboard');
+        const res  = await fetch(API_BASE_URL + '/api/dashboard');
         const data = await res.json();
         renderStats(data);
         renderBadges(data.badges);

@@ -13,6 +13,7 @@
   
   <!-- CSS Stylesheet -->
   <link rel="stylesheet" href="/static/css/style.css">
+  <script src="/static/js/config.js"></script>
 </head>
 <body class="dark-mode">
   <div class="background-decor">
@@ -106,7 +107,7 @@
       const container = document.getElementById("saved-grid-container");
       
       try {
-        const response = await fetch("/api/saved");
+        const response = await fetch(API_BASE_URL + "/api/saved");
         if (!response.ok) throw new Error("Failed to fetch saved sentences");
         
         const data = await response.json();
@@ -186,7 +187,7 @@
       if (!confirm("Are you sure you want to delete this saved entry?")) return;
       
       try {
-        const response = await fetch(`/api/saved/${id}`, { method: "DELETE" });
+        const response = await fetch(API_BASE_URL + `/api/saved/${id}`, { method: "DELETE" });
         if (!response.ok) throw new Error("Failed to delete entry");
         
         const card = document.getElementById(`card-${id}`);
@@ -223,7 +224,7 @@
       `;
       
       try {
-        const response = await fetch("/tts", {
+        const response = await fetch(API_BASE_URL + "/tts", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

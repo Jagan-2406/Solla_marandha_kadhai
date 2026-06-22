@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#1b1c2d">
+  <script src="/static/js/config.js"></script>
 </head>
 <body class="dark-mode">
   <div class="background-decor">
@@ -143,7 +144,7 @@
       resultContent.innerHTML = '<div class="grammar-loading"><div class="loader-dots"><span></span><span></span><span></span></div><p>AI is analysing your sentence...</p></div>';
 
       try {
-        const res  = await fetch('/check_grammar', {
+        const res  = await fetch(API_BASE_URL + '/check_grammar', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text })
@@ -199,7 +200,7 @@
     async function speakCorrected() {
       if (!correctedText) return;
       try {
-        const res = await fetch('/tts', {
+        const res = await fetch(API_BASE_URL + '/tts', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: correctedText })
