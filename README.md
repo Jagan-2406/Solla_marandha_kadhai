@@ -33,32 +33,7 @@ An AI-powered web application that helps students learn Tamil grammar interactiv
 
 ---
 
-## 🚀 How to Run
 
-```bash
-# 1. Unzip the project
-unzip Solla_marandha_kadhai.zip
-cd Solla_marandha_kadhai/backend
-
-# 2. Create and activate virtual environment
-python -m venv venv
-venv\Scripts\activate        # Windows
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Create the database (run once)
-python init_db.py
-
-# 5. Start the server
-python app.py
-```
-
-Open browser → **http://localhost:5000**
-
-> ⚠️ Requires Python 3.10+. Use Google Chrome for voice features.
-
----
 
 ## 🛠️ Tech Stack
 
