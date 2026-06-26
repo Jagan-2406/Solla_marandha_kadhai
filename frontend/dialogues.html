@@ -101,7 +101,7 @@
       grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-secondary);"><div class="loader-dots" style="justify-content:center"><span></span><span></span><span></span></div><p style="margin-top:10px">Loading...</p></div>';
       try {
         const url = scenario === 'all' ? '/api/dialogues' : `/api/dialogues?scenario=${scenario}`;
-        const res  = await fetch(url);
+        const res  = await fetch(API_BASE_URL + url);
         const data = await res.json();
         allDialogues = data;
         renderDialogues(data);
